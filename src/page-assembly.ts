@@ -47,17 +47,25 @@ export function assemblePage(host: Element, spec: PageSpec, ctx: MountCtx): Page
     mounted.push(rail);
   }
 
-  // surface — ALWAYS mounts. The surface mount owns its frame; page-assembly
-  // owns the per-section hosts (so section(key) is stable regardless of the
-  // surface implementation).
+  // surface — ALWAYS mounts. The surface mount owns its frame AND, when it
+  // implements `section(key)` (as mountSurface does), it ALSO owns the per-section
+  // hosts it built from `spec.surface.sections`. In that case page-assembly must
+  // NOT append its own hosts (that was a double-render) — it defers to the surface
+  // handle's section(key). Only when the surface does NOT provide section(key) do
+  // we synthesize a host, so section(key) stays available for bare surfaces.
   const surface = spec.surface.mount(body, ctx, spec.surface);
   mounted.push(surface);
 
+  const surfaceSection = (surface as { section?: (key: string) => HTMLElement | null }).section;
+  const ownsSections = typeof surfaceSection === "function";
+
   const sections = new Map<string, HTMLElement>();
-  for (const s of spec.surface.sections) {
-    const sectionHost = el("div", { class: "amu-shell-section", "data-section": s.key });
-    surface.el.appendChild(sectionHost);
-    sections.set(s.key, sectionHost);
+  if (!ownsSections) {
+    for (const s of spec.surface.sections) {
+      const sectionHost = el("div", { class: "amu-shell-section", "data-section": s.key });
+      surface.el.appendChild(sectionHost);
+      sections.set(s.key, sectionHost);
+    }
   }
 
   host.appendChild(shell);
@@ -66,7 +74,10 @@ export function assemblePage(host: Element, spec: PageSpec, ctx: MountCtx): Page
     el: shell,
     surface,
     ...(rail ? { rail } : {}),
-    section: (key) => sections.get(key) ?? null,
+    // Prefer the surface's own section host (no double-render); fall back to the
+    // synthesized host for a bare surface that doesn't implement section(key).
+    section: (key) =>
+      ownsSections ? (surfaceSection!(key) ?? null) : (sections.get(key) ?? null),
     destroy: () => {
       // Reverse mount order; a failing child destroy must not block the cascade.
       for (let i = mounted.length - 1; i >= 0; i--) {

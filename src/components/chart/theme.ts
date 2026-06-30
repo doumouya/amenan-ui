@@ -1,10 +1,14 @@
-/* chart/theme — ECharts theme registration + resolver. The chart themes live as
-   JSON the consumer hosts; ensureRegisteredThemes() fetches + registers them once
-   per page-load (memoized) when window.echarts is present. chartTheme() maps the
-   current app theme (html[data-theme]) → its chart-theme name, so charts carry the
-   app identity. Graceful with no echarts on the page (returns a resolved Promise,
-   never throws). Ported to strict TS; the theme-base path is configurable (no
-   hardcoded host route). */
+/* chart/theme — ECharts theme registration + resolver. The chart-theme JSON is
+   the CONSUMER's to supply: the loader is INJECTED via configureChartThemes({load})
+   (a Source<unknown> keyed by theme name) — amenan-ui hardcodes NO host route and
+   issues NO fetch. ensureRegisteredThemes() runs the injected loader once per
+   page-load (memoized) when window.echarts is present; with no loader configured
+   it's a graceful no-op (charts use the default ECharts theme). chartTheme() maps
+   the current app theme (html[data-theme]) → its chart-theme name, so charts carry
+   the app identity. Graceful with no echarts on the page (returns a resolved
+   Promise, never throws). Ported to strict TS. */
+
+import type { Source } from "../../contract/index.ts";
 
 /** The minimal ECharts surface the chart components touch — typed so reads of
     window.echarts are safe. ECharts itself is NEVER imported; the consumer loads
@@ -37,29 +41,40 @@ const CHART_THEME: Record<string, string> = {
   latte: "theme-latte",
 };
 
-let registerP: Promise<unknown> | null = null;
-let themeBase = "/chart-themes";
-
-/** Point the theme loader at where the consumer hosts the chart-theme JSON
-    (default "/chart-themes"). Call before the first chart mounts. */
-export function configureChartThemes(base: string): void {
-  themeBase = base.replace(/\/$/, "");
-  registerP = null; // re-fetch from the new base on next ensure
+/** How the consumer supplies chart-theme JSON. `load(name)` resolves the theme
+    object for a registered name (e.g. by fetching the consumer's own host route,
+    or reading a bundled module) — amenan-ui never assumes a path or transport. */
+export interface ChartThemeConfig {
+  /** Resolve a theme-name → its ECharts theme JSON object. */
+  load: Source<unknown>;
 }
 
-/** Fetch + register the chart themes once (memoized). Fire-and-forget from
-    chart-init paths; a cold first paint may use the ECharts default for a few ms.
-    No echarts on the page → a resolved Promise (graceful no-op). */
+let registerP: Promise<unknown> | null = null;
+let themeLoad: Source<unknown> | null = null;
+
+/** Inject the chart-theme loader. `cfg.load(name)` returns the theme JSON for a
+    registered name (consumer-owned transport — no hardcoded host route here).
+    Call before the first chart mounts; until configured, theme registration is a
+    graceful no-op and charts use the default ECharts theme. */
+export function configureChartThemes(cfg: ChartThemeConfig): void {
+  themeLoad = cfg.load;
+  registerP = null; // re-run the loader on next ensure
+}
+
+/** Run the injected loader + register the chart themes once (memoized).
+    Fire-and-forget from chart-init paths; a cold first paint may use the ECharts
+    default for a few ms. No echarts on the page, or no loader configured → a
+    resolved Promise (graceful no-op). */
 export function ensureRegisteredThemes(): Promise<unknown> {
   if (registerP) return registerP;
   const echarts = getEcharts();
-  if (!echarts) return Promise.resolve();
+  const load = themeLoad;
+  if (!echarts || !load) return Promise.resolve();
   registerP = Promise.all(
     THEME_NAMES.map(async (name) => {
       try {
-        const r = await fetch(`${themeBase}/${name}.json`);
-        if (!r.ok) return;
-        echarts.registerTheme(name, await r.json());
+        const theme = await load({ name });
+        if (theme != null) echarts.registerTheme(name, theme);
       } catch {
         /* silent — caller falls back to ECharts default */
       }

@@ -19,6 +19,19 @@
   padding: var(--sp-2) 0;
 }
 
+/* transient poll-failure banner — kept above the retained feed (distinct from the
+   empty-state, which means "no messages"). */
+.amu-mt-refresh-error {
+  flex: 0 0 auto;
+  padding: var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text-mute);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+
 .amu-mt-msg { display: flex; gap: var(--sp-2); }
 .amu-mt-avatar {
   flex: 0 0 auto;

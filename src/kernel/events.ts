@@ -13,13 +13,19 @@ export interface CapturedEvent {
 
 const buffer: CapturedEvent[] = [];
 const CAP = 100;
+const DEDUP_WINDOW = 10_000; // ms
 const seen = new Map<string, number>(); // kind|message → last ts (10s dedup window)
 
 function capture(kind: string, message: string, detail?: string): void {
   const key = `${kind}|${message}`;
   const now = Date.now();
+  // Prune entries older than the dedup window so `seen` can't grow unbounded
+  // (a long-lived page emitting many distinct errors would leak otherwise).
+  for (const [k, ts] of seen) {
+    if (now - ts >= DEDUP_WINDOW) seen.delete(k);
+  }
   const last = seen.get(key);
-  if (last !== undefined && now - last < 10_000) return;
+  if (last !== undefined && now - last < DEDUP_WINDOW) return;
   seen.set(key, now);
   if (buffer.length >= CAP) return;
   buffer.push({ kind, message, detail, at: new Date().toISOString() });

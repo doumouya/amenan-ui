@@ -65,6 +65,10 @@ export interface ChartEditorCfg {
   aggFns?: AggFn[];
   /** Notified with the recipe after every successful preview. */
   onChange?: (recipe: ChartRecipe) => void;
+  /** Notified when a columns/preview fetch genuinely REJECTS (not on a stale/aborted
+      preview superseded by a newer edit). Lets the consumer toast; the editor also
+      shows an inline preview-error state. */
+  onError?: (err: unknown) => void;
 }
 
 export interface ChartEditorHandle extends MountHandle {
@@ -120,6 +124,21 @@ export function mountChartEditor(host: Element, cfg: ChartEditorCfg): ChartEdito
   const preview = el("div", { class: "amu-ce-preview" });
   root.append(form, preview);
   host.append(root);
+
+  // Surface a GENUINE rejection (distinct from a stale/aborted preview): render an
+  // inline preview-error affordance + notify the consumer. Per finding SF3.
+  function showError(err: unknown): void {
+    inst?.dispose();
+    inst = null;
+    preview.replaceChildren(
+      el("div", { class: "amu-ce-error", role: "alert" }, "Couldn't load preview"),
+    );
+    cfg.onError?.(err);
+  }
+  function clearError(): void {
+    const e = preview.querySelector(".amu-ce-error");
+    if (e) e.remove();
+  }
 
   const field = (label: string, controlHost: HTMLElement): HTMLElement =>
     el("label", { class: "amu-ce-field" }, el("span", { class: "amu-ce-label" }, label), controlHost);
@@ -222,8 +241,9 @@ export function mountChartEditor(host: Element, cfg: ChartEditorCfg): ChartEdito
     }
     try {
       columns = (await cfg.columns({ fileId: sourceId })) ?? [];
-    } catch {
+    } catch (err) {
       columns = [];
+      showError(err);
     }
   }
 
@@ -254,10 +274,14 @@ export function mountChartEditor(host: Element, cfg: ChartEditorCfg): ChartEdito
           aggCol,
           aggFn: c.agg_fn,
         })) ?? [];
-    } catch {
+    } catch (err) {
+      // A stale/aborted preview superseded by a newer edit is NOT a real failure —
+      // a later rebuild owns the surface. Only surface a genuine rejection (SF3).
+      if (my === seq) showError(err);
       return;
     }
     if (my !== seq) return;
+    clearError();
     // first column = the group key; last = the aggregation.
     const data = rows.map((r) => ({
       name: String(r[0]),

@@ -37,6 +37,19 @@
   background: var(--surface);
 }
 
+/* inline preview-error affordance — shown when a columns/preview fetch genuinely
+   rejects (distinct from a stale/aborted preview). */
+.amu-ce-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18rem;
+  padding: var(--sp-4);
+  color: var(--danger, var(--text-mute));
+  font-size: 0.875rem;
+  text-align: center;
+}
+
 /* stack form-over-preview on a narrow viewport (the modal goes single-column). */
 @media (max-width: 48rem) {
   .amu-ce { grid-template-columns: 1fr; }

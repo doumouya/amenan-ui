@@ -163,6 +163,16 @@ export function mountOmni(host: Element, cfg: OmniCfg): OmniHandle {
   }
 
   function choose(r: OmniResult): void {
+    // Cancel any pending debounce + in-flight request first, so a stale search
+    // resolving after the selection can't re-open the dropdown.
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    if (inflight) {
+      inflight.abort();
+      inflight = null;
+    }
     close();
     field.value = "";
     lastQ = "";

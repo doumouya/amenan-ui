@@ -15,6 +15,7 @@ import type {
   RouteMap,
   Router,
 } from "./contract/index.ts";
+import { captureMountError } from "./kernel/events.ts";
 
 export interface RouterConfig {
   routes: RouteMap;
@@ -66,23 +67,33 @@ export function createRouter(cfg: RouterConfig): Router {
       return;
     }
 
-    // Tear down the previous handle (a failing destroy must not block nav).
+    // Tear down the previous handle (a failing destroy must not block nav, and
+    // must not silently vanish — record it like a mount failure).
     try {
       current?.destroy?.();
-    } catch {
-      /* swallowed */
+    } catch (err) {
+      captureMountError(id, err);
     }
     current = null;
 
     // Optional injected module load (the consumer's lazy-load seam). The route's
     // own `load` is also honoured; loadModule lets a test stub the transport.
-    if (def.load) await def.load();
-    if (cfg.loadModule && typeof def.meta?.["module"] === "string") {
-      await cfg.loadModule(def.meta["module"] as string);
-    }
+    // A mount/load failure must NOT propagate out of navigate() and must not
+    // leave the host half-torn-down: `current` is already null (defined state).
+    try {
+      if (def.load) await def.load();
+      if (cfg.loadModule && typeof def.meta?.["module"] === "string") {
+        await cfg.loadModule(def.meta["module"] as string);
+      }
 
-    const handle = await cfg.mount(host(), def, ctx);
-    current = handle ?? null;
+      const handle = await cfg.mount(host(), def, ctx);
+      current = handle ?? null;
+    } catch (err) {
+      // Host stays in a defined state: previous handle already destroyed,
+      // `current` is null, no partial handle is retained.
+      current = null;
+      captureMountError(id, err);
+    }
   }
 
   function onHashChange(): void {
@@ -98,8 +109,8 @@ export function createRouter(cfg: RouterConfig): Router {
       removeEventListener("hashchange", onHashChange);
       try {
         current?.destroy?.();
-      } catch {
-        /* swallowed */
+      } catch (err) {
+        captureMountError("router-stop", err);
       }
       current = null;
     },

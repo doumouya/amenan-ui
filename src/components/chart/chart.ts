@@ -8,6 +8,7 @@
 
 import { el } from "../../kernel/dom.ts";
 import type { MountHandle } from "../../contract/index.ts";
+import { captureMountError } from "../../kernel/events.ts";
 import { ensureRegisteredThemes, chartTheme, getEcharts } from "./theme.ts";
 import type { EChartsInstance } from "./theme.ts";
 
@@ -45,7 +46,10 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
   card.append(canvas);
   host.append(card);
 
-  if (empty || !echarts) {
+  /** Fall back to the faded empty placeholder (used both for the no-data case and
+      when a live render throws — this component is documented to never throw). */
+  function emptyHandle(): ChartTileHandle {
+    card.classList.add("amu-chart-card--empty");
     return {
       el: card,
       canvas,
@@ -59,13 +63,30 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
     };
   }
 
+  if (empty || !echarts) return emptyHandle();
+
   // ensureRegisteredThemes() is fire-and-forget (memoized); a cold first paint
   // may use the ECharts default theme for a few ms — accepted.
-  ensureRegisteredThemes();
-  const chart = echarts.init(canvas, theme || chartTheme());
-  chart.setOption(option);
+  // echarts.init / setOption can throw on a malformed option or a vendor quirk;
+  // the contract is "never throws", so render the empty placeholder AND surface
+  // the failure (don't silently swallow). Per finding SF1.
+  let chart: EChartsInstance;
+  try {
+    ensureRegisteredThemes();
+    chart = echarts.init(canvas, theme || chartTheme());
+    chart.setOption(option);
+  } catch (e) {
+    captureMountError("chart", e);
+    return emptyHandle();
+  }
 
-  const onResize = (): void => chart.resize();
+  const onResize = (): void => {
+    try {
+      chart.resize();
+    } catch (e) {
+      captureMountError("chart", e);
+    }
+  };
   window.addEventListener("resize", onResize);
 
   return {
@@ -73,18 +94,34 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
     canvas,
     chart,
     resize() {
-      chart.resize();
+      try {
+        chart.resize();
+      } catch (e) {
+        captureMountError("chart", e);
+      }
     },
     setOption(opt: unknown) {
-      chart.setOption(opt);
+      try {
+        chart.setOption(opt);
+      } catch (e) {
+        captureMountError("chart", e);
+      }
     },
     dispose() {
       window.removeEventListener("resize", onResize);
-      chart.dispose();
+      try {
+        chart.dispose();
+      } catch (e) {
+        captureMountError("chart", e);
+      }
     },
     destroy() {
       window.removeEventListener("resize", onResize);
-      chart.dispose();
+      try {
+        chart.dispose();
+      } catch (e) {
+        captureMountError("chart", e);
+      }
       card.remove();
     },
   };

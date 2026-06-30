@@ -6,6 +6,7 @@
 
 import { THEMES, buildOption } from "./build.ts";
 import type { BakedOption, ChartCfg } from "./build.ts";
+import { captureMountError } from "../../kernel/events.ts";
 import { ensureRegisteredThemes, getEcharts } from "./theme.ts";
 import type { EChartsInstance } from "./theme.ts";
 
@@ -81,7 +82,14 @@ export function renderChart(
       /* already gone */
     }
   }
-  const inst = echarts.init(slot, themeForInit);
-  inst.setOption(buildOption(cfg, t));
-  return inst;
+  // init/setOption can throw on a malformed option or a vendor quirk; this helper
+  // is documented "never throws" → record + return null (caller falls back). SF1.
+  try {
+    const inst = echarts.init(slot, themeForInit);
+    inst.setOption(buildOption(cfg, t));
+    return inst;
+  } catch (e) {
+    captureMountError("chart", e);
+    return null;
+  }
 }

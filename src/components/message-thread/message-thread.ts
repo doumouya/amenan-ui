@@ -133,15 +133,34 @@ export function mountMessageThread(host: Element, cfg: MessageThreadCfg): MountH
     });
   }
 
+  // A transient "couldn't refresh" affordance — distinct from the empty-state. It
+  // does NOT clear the prior feed (a poll error must not look like "no messages").
+  function showRefreshError(): void {
+    if (feed.querySelector(".amu-mt-refresh-error")) return; // one banner at a time
+    feed.append(
+      el(
+        "div",
+        { class: "amu-mt-refresh-error", role: "status" },
+        "Couldn't refresh the conversation.",
+      ),
+    );
+  }
+  function clearRefreshError(): void {
+    feed.querySelector(".amu-mt-refresh-error")?.remove();
+  }
+
   async function pull(initial: boolean): Promise<void> {
     let out: Message[];
     try {
       out = rowsOf(await cfg.source(cursor ? { after: cursor } : {}));
     } catch {
-      if (initial && !seen.size) emptyFeed(); // source absent / error → empty-state on first load
+      // A poll error is NOT "truly empty": never paint the empty-state. Keep the
+      // prior feed and show a transient "couldn't refresh" affordance. Per SF4.
+      if (alive) showRefreshError();
       return;
     }
     if (!alive) return;
+    clearRefreshError(); // a successful pull clears any prior error banner
     if (initial && !out.length && !seen.size) {
       emptyFeed();
       return;
