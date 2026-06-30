@@ -19,6 +19,12 @@
 @import "src/page-assembly.css";
 
 /* ── components (added in W3–W5) ── */
+/* W3 fold-in — ported from web-kit (termbar / tabs / code / kindLabel), amenan
+   conventions (co-located sheets, .amu-* classes, token-only colors). */
+@import "src/components/termbar/termbar.css";
+@import "src/components/tabs/tabs.css";
+@import "src/components/code/code.css";
+@import "src/components/kindLabel/kindLabel.css";
 /* W3a leaf tier — atoms first (others compose it), then the rest. */
 @import "src/components/atoms/atoms.css";
 @import "src/components/card/card.css";

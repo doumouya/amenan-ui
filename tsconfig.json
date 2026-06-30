@@ -19,15 +19,11 @@
   "include": ["src", "tests"],
   "exclude": [
     "node_modules",
-    "dist",
-    // W3 — fold-in suites for components not built until W3 (termbar / perm-cell
-    // cap / responsive kernel / tabs-code-kindLabel / chart canvas reaction).
-    // They import not-yet-existing modules, so tsc would 2307 on them. Re-included
-    // by the W3 dispatch when their implementations land.
-    "tests/responsive.test.ts",
-    "tests/termbar.test.ts",
-    "tests/perm-cell-cap.test.ts",
-    "tests/new-components.test.ts",
-    "tests/chart-theme-reaction.test.ts"
+    "dist"
+    // W3 fold-in landed: the responsive-kernel / termbar / perm-cell-cap /
+    // tabs-code-kindLabel / chart-canvas-reaction suites are re-included now that
+    // their implementations exist (src/kernel/responsive.ts,
+    // src/components/{termbar,tabs,code,kindLabel}/**, the widened perm-cell, and
+    // the chart onThemeChange reaction).
   ]
 }

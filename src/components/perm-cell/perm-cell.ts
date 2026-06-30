@@ -8,7 +8,13 @@
    DECOUPLING (AC-H3): no data layer, no I/O, no hardcoded route — the only seam
    is the onChange callback + the optional config-driven cycle order.
 
-   mountPermCell(host, { value?, order?, labels?, titles?, onChange? })
+   CAP CEILING (AC-18): an optional `cap` clamps the highest reachable tier — e.g.
+   `cap:"r"` is a field even an Admin may only read (cycling ceils at `r` and wraps
+   back to the floor, never reaching `rw`). `cap` = the empty/floor tier (`""`) is a
+   permanently-locked guardrail: it stamps `data-locked="1"`, a click is a no-op
+   (onChange never fires), and CSS renders a lock glyph + not-allowed cursor.
+
+   mountPermCell(host, { value?, order?, labels?, titles?, cap?, onChange? })
      → { el, update({ value }), destroy }
 
    Sole owner of every .amu-perm* class (ui-fork-audit R4); state rides
@@ -37,6 +43,11 @@ export interface PermCellCfg {
   labels?: Record<string, string>;
   /** Per-value tooltip / aria-label (falls back to the value). */
   titles?: Record<string, string>;
+  /** The cap CEILING — the highest tier reachable by cycling (clamped to `order`).
+      Cycling ceils here and wraps back to the floor; tiers above `cap` are never
+      surfaced. `cap` = the floor tier (`order[0]`, e.g. "") is a permanently-locked
+      guardrail (data-locked="1", click is a no-op). Omitted ⇒ the full `order`. */
+  cap?: string;
   /** Called with the NEXT value after a click — the consumer persists it and, on
       failure, reverts via the handle's update({ value }). */
   onChange?: (next: string) => void;
@@ -53,8 +64,18 @@ export function mountPermCell(host: Element, cfg: PermCellCfg = {}): MountHandle
     cfg.labels?.[v] ?? DEFAULT_LABELS[v] ?? (v || "—");
   const titleFor = (v: string): string => cfg.titles?.[v] ?? DEFAULT_TITLES[v] ?? v;
 
-  const norm = (v: string | undefined): string =>
-    v != null && order.includes(v) ? v : (order[0] ?? "");
+  // The cap ceiling index (AC-18). Omitted ⇒ the full order (cap = the last tier).
+  // A cap clamped to the floor (index 0) is a permanently-locked guardrail.
+  const capIdx =
+    cfg.cap != null && order.includes(cfg.cap) ? order.indexOf(cfg.cap) : order.length - 1;
+  const locked = capIdx <= 0;
+
+  // norm clamps both the initial value and any reverted value to [floor, cap].
+  const norm = (v: string | undefined): string => {
+    const i = v != null ? order.indexOf(v) : -1;
+    const clamped = Math.min(Math.max(i, 0), capIdx);
+    return order[clamped] ?? (order[0] ?? "");
+  };
   let value = norm(cfg.value);
 
   const btn = el("button", { class: "amu-perm-cell", type: "button" });
@@ -62,20 +83,24 @@ export function mountPermCell(host: Element, cfg: PermCellCfg = {}): MountHandle
   function paint(): void {
     btn.textContent = labelFor(value);
     btn.dataset.perm = value || "none";
-    const t = titleFor(value);
+    if (locked) btn.dataset.locked = "1";
+    const t = locked ? "locked — no access to this field for this role" : titleFor(value);
     btn.title = t;
     btn.setAttribute("aria-label", t);
   }
 
   btn.addEventListener("click", () => {
+    if (locked) return; // a guardrail cell never grants — click is a no-op
+    // Cycle within [floor, cap]: span = capIdx + 1 tiers, wrap back to the floor.
+    const span = capIdx + 1;
     const idx = order.indexOf(value);
-    value = order[(idx + 1) % order.length] ?? (order[0] ?? "");
+    value = order[(idx + 1) % span] ?? (order[0] ?? "");
     paint(); // optimistic
     cfg.onChange?.(value);
   });
 
   paint();
-  host.append(btn);
+  host.appendChild(btn);
   return {
     el: btn,
     update: (p: PermCellUpdate) => {

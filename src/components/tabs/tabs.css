@@ -1,0 +1,97 @@
+/* tabs — calm view switcher (AC-20). Sole owner of every .amu-tabs* class
+   (ui-fork-audit R4). Ported from web-kit's tabs CSS to amenan token names:
+   structural divider → --rule, active/selected affordance → --accent, the
+   segmented active pill floats on --shadow-popover, focus → --focus-ring. */
+
+.amu-tabs {
+  display: inline-flex;
+}
+
+.amu-tabs--block {
+  display: flex;
+}
+
+.amu-tabs-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-mute);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.amu-tabs--block .amu-tabs-tab {
+  flex: 1;
+  justify-content: center;
+}
+
+.amu-tabs-count {
+  font-size: var(--text-xs);
+  color: var(--text-mute);
+  font-variant-numeric: tabular-nums;
+}
+
+/* underline — the quiet in-page switch */
+.amu-tabs--underline {
+  gap: var(--sp-4);
+  border-bottom: 1px solid var(--rule);
+}
+
+.amu-tabs--underline .amu-tabs-tab {
+  padding: var(--sp-2) 2px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+}
+
+.amu-tabs--underline .amu-tabs-tab:hover {
+  color: var(--text);
+}
+
+.amu-tabs--underline .amu-tabs-tab[aria-selected="true"] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.amu-tabs--underline .amu-tabs-tab[aria-selected="true"] .amu-tabs-count {
+  color: var(--accent);
+}
+
+/* segmented — a bordered pill group for compact toolbars */
+.amu-tabs--segmented {
+  gap: 0;
+  padding: 3px;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.amu-tabs--segmented .amu-tabs-tab {
+  padding: var(--sp-1) var(--pad-x);
+  border-radius: var(--radius-sm);
+  height: calc(var(--ctl-h) - 6px);
+}
+
+.amu-tabs--segmented .amu-tabs-tab:hover {
+  color: var(--text);
+}
+
+.amu-tabs--segmented .amu-tabs-tab[aria-selected="true"] {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: var(--shadow-popover);
+}
+
+.amu-tabs-tab:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

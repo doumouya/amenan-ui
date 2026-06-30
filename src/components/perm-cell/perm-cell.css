@@ -33,3 +33,15 @@
   color: var(--signal);
   border-color: color-mix(in srgb, var(--signal) 35%, var(--border));
 }
+
+/* cap = the empty/floor tier ⇒ a permanently-locked guardrail (AC-18): a
+   not-allowed cursor + a lock glyph appended via ::after; the click is a no-op. */
+.amu-perm-cell[data-locked="1"] {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.amu-perm-cell[data-locked="1"]::after {
+  content: " \1F512";
+  font-size: 0.7em;
+}

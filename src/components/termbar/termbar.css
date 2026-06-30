@@ -1,0 +1,59 @@
+/* termbar — the Console top strip (AC-17). Sole owner of every .amu-termbar*
+   class (ui-fork-audit R4). Ported from web-kit's termbar CSS to amenan token
+   names: the hard structural line is --rule, the status pill is the one-green
+   --signal, mono type via --font-mono, muted secondary text via --text-mute. */
+
+.amu-termbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-bottom: 1.5px solid var(--rule);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.amu-termbar-dot {
+  width: 0.5625rem;
+  height: 0.5625rem;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--rule);
+}
+
+.amu-termbar-name {
+  font-weight: 700;
+  margin-left: var(--sp-2);
+}
+
+.amu-termbar-cwd {
+  color: var(--text-mute);
+}
+
+.amu-termbar-status {
+  color: var(--signal);
+  font-weight: 700;
+}
+
+.amu-termbar-toggle {
+  margin-left: auto;
+  appearance: none;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-mute);
+  border: 1.5px solid var(--rule);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-3);
+  line-height: 1.4;
+  transition:
+    color var(--fast) var(--ease),
+    background-color var(--fast) var(--ease);
+}
+
+.amu-termbar-toggle:hover {
+  color: var(--text);
+  background: var(--signal-tint);
+}

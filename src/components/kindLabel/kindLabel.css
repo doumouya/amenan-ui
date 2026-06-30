@@ -1,0 +1,55 @@
+/* kindLabel — a column-type annotation (AC-20). Sole owner of every .amu-kind*
+   class (ui-fork-audit R4). Ported from web-kit's kindLabel CSS to amenan token
+   names: mono via --font-mono, per-kind hue via the theme --chart-* palette (so
+   the tints track the active theme, never a hardcoded literal), Bool via --warn,
+   Text via --text-mute. The `--k` custom prop carries the per-kind hue. */
+
+.amu-kind {
+  --k: var(--text-mute);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--k);
+  white-space: nowrap;
+}
+
+.amu-kind--text-only {
+  color: var(--text-mute);
+}
+
+.amu-kind--chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  height: 1.25rem;
+  padding: 0 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--k) 28%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--k) 10%, var(--surface));
+  color: var(--k);
+}
+
+.amu-kind-tick {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 1px;
+  background: var(--k);
+  flex: none;
+}
+
+.amu-kind--int {
+  --k: var(--chart-2);
+}
+
+.amu-kind--float {
+  --k: var(--chart-3);
+}
+
+.amu-kind--bool {
+  --k: var(--warn);
+}
+
+.amu-kind--text {
+  --k: var(--text-mute);
+}

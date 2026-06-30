@@ -6,6 +6,17 @@
 export { esc, el, qs } from "./kernel/dom.ts";
 export type { Attrs, Child } from "./kernel/dom.ts";
 export { initials, fmtDateTime } from "./kernel/format.ts";
+// responsive — device-class + breakpoint signals (W3 fold-in, AC-19).
+export {
+  BREAKPOINTS,
+  breakpoint,
+  device,
+  isTouch,
+  isShort,
+  isFolded,
+  onChange as onViewportChange,
+} from "./kernel/responsive.ts";
+export type { Device, Breakpoint } from "./kernel/responsive.ts";
 export {
   installErrorCapture,
   captureMountError,
@@ -75,6 +86,14 @@ export { assemblePage } from "./page-assembly.ts";
 export type { PageHandle } from "./page-assembly.ts";
 export { createRouter } from "./router.ts";
 export type { RouterConfig } from "./router.ts";
+
+// Components — W3 fold-in (ported from web-kit; AC-17/AC-20). Leaf components on
+// the kernel `el` + the styles.css manifest (NO ensureStyles); scrub-clean .amu-*.
+// termbar: the Console top strip wired to theme.ts toggleMode/getMode/onThemeChange.
+export * from "./components/termbar/termbar.ts";
+export * from "./components/tabs/tabs.ts";
+export * from "./components/code/code.ts";
+export * from "./components/kindLabel/kindLabel.ts";
 
 // Components — W3a leaf tier (atoms first; others compose it).
 export * from "./components/atoms/atoms.ts";

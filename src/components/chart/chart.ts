@@ -9,6 +9,7 @@
 import { el } from "../../kernel/dom.ts";
 import type { MountHandle } from "../../contract/index.ts";
 import { captureMountError } from "../../kernel/events.ts";
+import { onThemeChange } from "../../theme/theme.ts";
 import { ensureRegisteredThemes, chartTheme, getEcharts } from "./theme.ts";
 import type { EChartsInstance } from "./theme.ts";
 
@@ -40,11 +41,11 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
   const card = el("div", {
     class: "amu-chart-card" + (empty ? " amu-chart-card--empty" : ""),
   });
-  if (title) card.append(el("div", { class: "amu-chart-title" }, title));
+  if (title) card.appendChild(el("div", { class: "amu-chart-title" }, title));
   // Empty slots omit the canvas id (mount-lookup must never target them).
   const canvas = el("div", { class: "amu-chart-canvas", ...(!empty && id ? { id } : {}) });
-  card.append(canvas);
-  host.append(card);
+  card.appendChild(canvas);
+  host.appendChild(card);
 
   /** Fall back to the faded empty placeholder (used both for the no-data case and
       when a live render throws — this component is documented to never throw). */
@@ -71,6 +72,9 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
   // the contract is "never throws", so render the empty placeholder AND surface
   // the failure (don't silently swallow). Per finding SF1.
   let chart: EChartsInstance;
+  // The latest applied option — held so the theme reaction (AC-16) can re-apply it
+  // with the freshly-resolved tokens, and a consumer setOption() updates it too.
+  let current: unknown = option;
   try {
     ensureRegisteredThemes();
     chart = echarts.init(canvas, theme || chartTheme());
@@ -89,6 +93,19 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
   };
   window.addEventListener("resize", onResize);
 
+  // The SOLE allowed JS reaction to a theme switch (AC-16): the canvas can't
+  // re-resolve through the CSS cascade, so on a theme/mode flip the chart re-reads
+  // tokens (via chartTheme() → getComputedStyle in the resolver) and re-applies its
+  // option. Every OTHER component re-resolves via the cascade — nothing else
+  // subscribes to recolor. The unsubscribe is called in dispose()/destroy().
+  const unsubTheme = onThemeChange(() => {
+    try {
+      chart.setOption(current as object);
+    } catch (e) {
+      captureMountError("chart", e);
+    }
+  });
+
   return {
     el: card,
     canvas,
@@ -101,6 +118,7 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
       }
     },
     setOption(opt: unknown) {
+      current = opt;
       try {
         chart.setOption(opt);
       } catch (e) {
@@ -108,6 +126,7 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
       }
     },
     dispose() {
+      unsubTheme();
       window.removeEventListener("resize", onResize);
       try {
         chart.dispose();
@@ -116,6 +135,7 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
       }
     },
     destroy() {
+      unsubTheme();
       window.removeEventListener("resize", onResize);
       try {
         chart.dispose();

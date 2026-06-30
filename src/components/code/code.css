@@ -1,0 +1,52 @@
+/* code — inline / block monospace snippet (AC-20). Sole owner of every .amu-code*
+   class (ui-fork-audit R4). Ported from web-kit's code CSS to amenan token names:
+   mono via --font-mono, the chip surface via --surface-2, structural border via
+   --rule, the accent tone via --accent + --accent-soft. */
+
+.amu-code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.amu-code--inline {
+  padding: 0.05rem 0.3rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.amu-code--accent {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: transparent;
+}
+
+.amu-code--muted {
+  color: var(--text-mute);
+}
+
+.amu-code--block {
+  display: block;
+  padding: var(--sp-3) var(--sp-4);
+  margin: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  overflow: auto;
+  white-space: pre;
+}
+
+.amu-code--truncate {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+  display: inline-block;
+}
