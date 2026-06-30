@@ -17,6 +17,7 @@ const shim = installDomShim();
 
 // RED until the coder creates src/.
 import { createRouter } from "../src/router.ts";
+import { pendingEvents } from "../src/kernel/events.ts";
 import type { RouteMap, RouteDef, MountHandle, MountCtx } from "../src/contract/index.ts";
 
 function setHash(h: string) {
@@ -152,6 +153,66 @@ test("AC-G3: route match destroys the previous handle (failing destroy swallowed
     log,
     ["mount:a", "destroy:a", "mount:b"],
     "second navigation destroys a (throw swallowed) then mounts b",
+  );
+});
+
+// AC-G mount-error regression (reviewer finding SF2): a route's `mount` that
+// THROWS (or rejects) must NOT propagate out of navigate() — the router catches
+// it and records it via captureMountError -> pendingEvents() gains a `mount`
+// entry for that route id. RED now (router.ts does `await cfg.mount(...)` with
+// no try/catch and never calls captureMountError); GREEN once the coder wires
+// the catch -> captureMountError(id, err). Ref: AC-G3 / AC-C3 / finding SF2.
+test("AC-G/SF2: a mount that THROWS is caught (navigate does not throw) and recorded via captureMountError", async () => {
+  // Unique route id so the pendingEvents() assertion targets only THIS test's
+  // entry (events.ts keeps a shared module-level buffer with no reset).
+  const id = "boom-throw-" + Math.random().toString(36).slice(2);
+  const routes: RouteMap = { [id]: {} };
+  const router = createRouter({
+    routes,
+    mount: () => {
+      throw new Error("mount-blew-up");
+    },
+    resolveLanding: () => id,
+  });
+
+  setHash("#/" + id);
+  // (a) navigation must NOT throw out of the router — the router catches.
+  await assert.doesNotReject(async () => {
+    await router.navigate();
+  }, "a throwing mount must be caught inside the router, not propagated");
+
+  // (b) the failure is recorded via captureMountError -> pendingEvents().
+  const recorded = pendingEvents().some(
+    (e) => e.kind === "mount" && e.message === `page ${id} failed`,
+  );
+  assert.ok(
+    recorded,
+    `the router must record the mount failure via captureMountError (expected a 'mount' event for ${id})`,
+  );
+});
+
+test("AC-G/SF2: a mount that REJECTS is caught (no unhandled rejection) and recorded via captureMountError", async () => {
+  const id = "boom-reject-" + Math.random().toString(36).slice(2);
+  const routes: RouteMap = { [id]: {} };
+  const router = createRouter({
+    routes,
+    mount: () => Promise.reject(new Error("mount-rejected")),
+    resolveLanding: () => id,
+  });
+
+  setHash("#/" + id);
+  // (a) the rejected mount promise must be awaited+caught — navigate resolves.
+  await assert.doesNotReject(async () => {
+    await router.navigate();
+  }, "a rejecting mount must be caught inside the router (no unhandled rejection)");
+
+  // (b) recorded via captureMountError -> pendingEvents().
+  const recorded = pendingEvents().some(
+    (e) => e.kind === "mount" && e.message === `page ${id} failed`,
+  );
+  assert.ok(
+    recorded,
+    `the router must record the rejected mount via captureMountError (expected a 'mount' event for ${id})`,
   );
 });
 
