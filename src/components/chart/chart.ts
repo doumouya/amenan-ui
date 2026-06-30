@@ -73,7 +73,7 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
   // the failure (don't silently swallow). Per finding SF1.
   let chart: EChartsInstance;
   // The latest applied option — held so the theme reaction (AC-16) can re-apply it
-  // with the freshly-resolved tokens, and a consumer setOption() updates it too.
+  // onto the freshly re-init'd instance, and a consumer setOption() updates it too.
   let current: unknown = option;
   try {
     ensureRegisteredThemes();
@@ -94,12 +94,19 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
   window.addEventListener("resize", onResize);
 
   // The SOLE allowed JS reaction to a theme switch (AC-16): the canvas can't
-  // re-resolve through the CSS cascade, so on a theme/mode flip the chart re-reads
-  // tokens (via chartTheme() → getComputedStyle in the resolver) and re-applies its
-  // option. Every OTHER component re-resolves via the cascade — nothing else
-  // subscribes to recolor. The unsubscribe is called in dispose()/destroy().
+  // re-resolve through the CSS cascade. ECharts binds its theme at init(canvas,
+  // theme) — it is NOT a setOption-mutable property — so the only effective recolor
+  // is to DISPOSE the live instance and RE-INIT with the freshly re-resolved theme
+  // (theme || chartTheme(), mode-keyed), then re-apply the held option onto the
+  // FRESH instance. `chart` is reassigned so dispose()/destroy()/resize() and the
+  // returned handle's `chart` field all track the live instance. Mirrors the
+  // dispose+re-init pattern in render.ts. Every OTHER component re-resolves via the
+  // cascade — nothing else subscribes to recolor. Unsubscribe runs in
+  // dispose()/destroy().
   const unsubTheme = onThemeChange(() => {
     try {
+      chart.dispose();
+      chart = echarts.init(canvas, theme || chartTheme());
       chart.setOption(current as object);
     } catch (e) {
       captureMountError("chart", e);
@@ -109,7 +116,11 @@ export function mountChart(host: Element, cfg: ChartTileCfg = {}): ChartTileHand
   return {
     el: card,
     canvas,
-    chart,
+    // A getter so the handle's `chart` field tracks the LIVE instance across the
+    // AC-16 dispose+re-init reaction (the binding is reassigned on a theme switch).
+    get chart() {
+      return chart;
+    },
     resize() {
       try {
         chart.resize();

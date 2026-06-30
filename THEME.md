@@ -107,8 +107,10 @@ Its true brand tokens land in a later milestone.
     / `amu-mode`.
   - `listThemes(): ThemeName[]` — the registered names, static (no DOM scan).
   - `onThemeChange(fn)` — subscribe (`fn(theme, mode)`); returns an unsubscribe.
-    The chart canvas is the sole JS reaction to a switch — it re-reads tokens via
-    `getComputedStyle`; everything else re-resolves through the CSS cascade.
+    The chart canvas is the sole JS reaction to a switch — ECharts binds its theme
+    at `init(canvas, theme)`, so the reaction disposes the live instance and
+    re-inits with the freshly re-resolved chart theme (then re-applies the held
+    option); everything else re-resolves through the CSS cascade.
   - `prePaintSnippet` — the inline `<head>` script source that sets BOTH
     attributes before first paint (no FOUC). Embed it verbatim (see `index.html`).
 - **Back-compat:** a document carrying only the legacy single-axis

@@ -78,11 +78,17 @@ export function onChange(callback: () => void, signal?: AbortSignal): () => void
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(callback);
   };
-  const opts: AddEventListenerOptions = signal ? { signal } : {};
-  addEventListener("resize", handler, opts);
-  addEventListener("orientationchange", handler, opts);
-  return () => {
+  // Cancel any frame queued by the last handler so a teardown can't leak a
+  // one-frame post-cleanup callback. Runs on both the manual cleanup and abort.
+  const teardown = (): void => {
+    cancelAnimationFrame(frame);
     removeEventListener("resize", handler);
     removeEventListener("orientationchange", handler);
   };
+  const opts: AddEventListenerOptions = signal ? { signal } : {};
+  addEventListener("resize", handler, opts);
+  addEventListener("orientationchange", handler, opts);
+  // The signal already auto-removes the listeners; also drop the pending frame.
+  if (signal) signal.addEventListener("abort", () => cancelAnimationFrame(frame), { once: true });
+  return teardown;
 }

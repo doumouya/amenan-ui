@@ -37,7 +37,8 @@ export interface PermCellCfg {
   /** The current tier value; must be one of `order` (else falls to the first). */
   value?: string;
   /** The cycle order (one click advances to the next; wraps). Default
-      ["", "r", "rw"]. */
+      ["", "r", "rw"]. Should hold ≥2 tiers; a 1-element `order` makes the cell a
+      permanent lock (capIdx 0 ⇒ data-locked, click is a no-op). */
   order?: readonly string[];
   /** Per-value cell text (falls back to the value, "—" for the empty tier). */
   labels?: Record<string, string>;

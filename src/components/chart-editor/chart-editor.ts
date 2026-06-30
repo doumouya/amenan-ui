@@ -25,6 +25,7 @@ import type { ChartCfg, BakedOption } from "../chart/build.ts";
 import { renderChart, synthesizeOption } from "../chart/render.ts";
 import type { EChartsInstance } from "../chart/theme.ts";
 import { chartTheme } from "../chart/theme.ts";
+import { onThemeChange } from "../../theme/theme.ts";
 import type { MountHandle, Source } from "../../contract/index.ts";
 
 /** A selectable source file. */
@@ -118,6 +119,11 @@ export function mountChartEditor(host: Element, cfg: ChartEditorCfg): ChartEdito
   let columns: string[] = []; // the source file's columns
   let inst: EChartsInstance | null = null; // the preview ECharts instance
   let seq = 0; // guards rapid edits racing their preview
+  // Whether the user picked a theme via the editor's own dropdown. Until they do,
+  // the preview follows the app theme (AC-16: re-themes on an app-level switch); a
+  // manual pick pins the preview's palette and is NOT overridden by an app switch.
+  // Seeded true when editing a saved spec that carried an explicit theme.
+  let themePinned = cfg.initial?.spec?.theme != null;
 
   const root = el("div", { class: "amu-ce" });
   const form = el("div", { class: "amu-ce-form" });
@@ -186,6 +192,7 @@ export function mountChartEditor(host: Element, cfg: ChartEditorCfg): ChartEdito
     value: c.theme ?? "",
     onChange: (v) => {
       c.theme = v;
+      themePinned = true; // a manual pick pins the preview palette (AC-16)
       void rebuild();
     },
   });
@@ -300,6 +307,17 @@ export function mountChartEditor(host: Element, cfg: ChartEditorCfg): ChartEdito
     await rebuild();
   })();
 
+  // AC-16: the preview inits ECharts directly (renderChart), so the chart
+  // component's canvas reaction does NOT cover it — subscribe here. On an app-level
+  // theme switch re-resolve the preview's chart palette to the app's (chartTheme())
+  // and re-render — UNLESS the user pinned a theme via the editor's own dropdown
+  // (a manual choice is never overridden). Unsubscribed on destroy.
+  const unsubTheme = onThemeChange(() => {
+    if (themePinned) return;
+    c.theme = chartTheme();
+    void rebuild();
+  });
+
   return {
     el: root,
     /** The shape the consumer persists — the recipe only, NO baked option
@@ -310,6 +328,7 @@ export function mountChartEditor(host: Element, cfg: ChartEditorCfg): ChartEdito
     getOption: () => c.option ?? null,
     valid: () => !!(sourceId && title.trim() && c.group_by),
     destroy: () => {
+      unsubTheme();
       inst?.dispose();
       root.remove();
     },
