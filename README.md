@@ -20,19 +20,31 @@ amenan-ui ships **zero runtime dependencies** (`package.json` has no
 (Bootstrap Icons, ECharts) are NOT npm dependencies — link them only if you use
 icon glyphs or charts.
 
-## Linking the tokens
+## The theme platform
 
-The package owns a `--*` design-token vocabulary and two themes (dark default +
-light). Link the flattened stylesheet:
+amenan-ui is an **extensible theme platform**. A look is two axes — a theme
+**name** (`redpash` · `portfolio` · `numu` · any future client) × a **mode**
+(`dark` | `light`) — keyed on `html[data-theme="<name>"]` × `html[data-mode]`.
+Every theme fills the same frozen `--*` **token contract**; a switch is one
+attribute write that re-skins the whole tree through the CSS cascade.
+
+- **structure** (spacing, type scale, density, motion, breakpoints) is
+  theme-agnostic in `src/theme/base.css`;
+- **palette** (every contract token) is filled per theme × mode in
+  `src/theme/themes/<name>.css` (`redpash` byte-preserves the original look;
+  `portfolio` is the Console identity — ink/paper, one green signal, mono-first,
+  hard rule + offset block; `numu` is a documented WIP slot).
+
+Link the flattened stylesheet:
 
 ```html
 <link rel="stylesheet" href="amenan-ui/tokens.css" />
 ```
 
 In this repo's dev mode, link `styles.css` (the `@import` manifest). See
-[`THEME.md`](./THEME.md) for the token table and the `data-theme` contract, and
-embed the pre-paint snippet (`prePaintSnippet`) in `<head>` to avoid a flash of
-the default theme.
+[`THEME.md`](./THEME.md) for the full token contract, the redpash↔portfolio map,
+the two-axis selector, and the **add-a-theme recipe**; embed the pre-paint
+snippet (`prePaintSnippet`) in `<head>` to avoid a flash of the default theme.
 
 ## Composing a page — `assemblePage`
 
@@ -78,30 +90,43 @@ router.start();
 
 | Tier | Components |
 |---|---|
-| LEAF | atoms (button, chip, input, textarea, badge, spinner, kbd), card, empty-state, modal, menu, select, toast, stat, field, chip-row, pager, surface, markdown, uploader, score-badge, side-panel, dashboard-grid, grid-toolbar, report-builder, settings-form |
-| COMPOSED | chart, filter-panel, grid-view, redtable, column-manager, joins-wizard, sql-editor, steps-panel, workspace-panels, topbar, rail |
+| LEAF | atoms (button, chip, input, textarea, badge, spinner, kbd), card, empty-state, modal, menu, select, toast, stat, field, chip-row, pager, surface, markdown, uploader, score-badge, side-panel, dashboard-grid, grid-toolbar, report-builder, settings-form, **tabs**, **code**, **kindLabel** |
+| COMPOSED | chart, filter-panel, grid-view, redtable, column-manager, joins-wizard, sql-editor, steps-panel, workspace-panels, topbar, rail, **termbar** |
 | DATA | rail-data, object-list, message-thread, omni, chart-editor, perm-cell |
 
-All 36 components ship, plus the foundation (kernel, contract, theme, registries,
-page-assembly, router) and the optional, injected-wasm-path engine (wasm-engine +
-window-source). LEAF components are pure DOM; COMPOSED read theme tokens only;
-DATA components decouple every backend coupling behind an injected
-`source`/`send`/`onAction` callback (the Service/Source seam) — no transport,
-no fetch, no route literal anywhere in the library.
+LEAF components are pure DOM; COMPOSED read theme tokens only; DATA components
+decouple every backend coupling behind an injected `source`/`send`/`onAction`
+callback (the Service/Source seam) — no transport, no fetch, no route literal
+anywhere in the library. Four pieces are folded in from web-kit, renamed to the
+`.amu-*` discipline: **termbar** (the Console top strip, wired to `theme.ts` —
+its toggle drives `toggleMode()`), **tabs** (underline + segmented view
+switcher), **code** (inline / block monospace snippet), **kindLabel** (the
+datatable column-type tag), plus `perm-cell`'s `cap` ceiling (a clamped tier + a
+permanently-locked guardrail) and the `kernel/responsive.ts` device-class
+signals. The foundation (kernel, contract, theme platform, registries,
+page-assembly, router) + the optional injected-wasm-path engine ship alongside.
 
-## Theme toggle
+## Switching theme + mode
 
-`theme.ts` is the only runtime that reads/writes the choice:
+`theme.ts` is the only runtime that reads/writes the choice — an open-ended,
+two-axis API. `setTheme`/`setMode`/`toggleMode` are each **O(1)**: one
+documentElement attribute write + one `localStorage` mirror + fire listeners,
+nothing else.
 
 ```ts
-import { applyTheme, getTheme, onThemeChange } from "amenan-ui";
+import { setTheme, setMode, toggleMode, listThemes, getTheme, getMode, onThemeChange } from "amenan-ui";
 
-applyTheme(getTheme() === "dark" ? "light" : "dark"); // toggle + persist
-onThemeChange((name) => console.log("theme is now", name));
+setTheme("portfolio");          // write html[data-theme], persist amu-theme
+setMode("light");               // write html[data-mode], persist amu-mode
+toggleMode();                   // flip dark↔light
+listThemes();                   // ["redpash", "portfolio", "numu"] — cycle these
+onThemeChange((theme, mode) => console.log("look is now", theme, mode));
 ```
 
-The choice persists under `localStorage["amu-theme"]`; embed `prePaintSnippet` in
-`<head>` so the persisted theme is applied before first paint (no FOUC).
+The choice persists under `localStorage["amu-theme"]` (name) + `["amu-mode"]`
+(mode); embed `prePaintSnippet` in `<head>` so the persisted look is applied
+before first paint (no FOUC). A legacy single-axis `amu-theme` of `"dark"`/
+`"light"` is read as the mode (theme → `redpash`) for back-compat.
 
 ## Proof — showcase + app
 
@@ -127,7 +152,9 @@ links them so `bi-*` glyphs and charts render.
 - **PageSpec** — the page seam. Pure data: a surface, an optional injected topbar,
   an optional rail (literal `groups` + an optional injected `load`).
 - **RouteMap + Guard** — the routing seam. A generic map + a guard chain.
-- **Theme** — the look seam. The `--*` token names are the swappable schema.
+- **Theme** — the look seam. The `--*` token contract is the swappable schema; a
+  theme is a name × mode pair (`html[data-theme]` × `[data-mode]`), and any
+  client theme plugs in the same documented way (see [`THEME.md`](./THEME.md)).
 
 ## Build + CI
 

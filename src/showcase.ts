@@ -21,8 +21,10 @@ import {
   el,
   getTheme,
   getMode,
+  setTheme,
   setMode,
   toggleMode,
+  listThemes,
   register,
   listComponents,
   toMount,
@@ -35,6 +37,11 @@ import {
   badge,
   spinner,
   kbd,
+  // W3 fold-in (ported from web-kit): the Console strip + 3 new components.
+  mountTermbar,
+  mountTabs,
+  mountCode,
+  mountKindLabel,
   // leaf components (W3)
   mountCard,
   mountEmptyState,
@@ -126,22 +133,53 @@ function reg(name: string, factory: () => Node): void {
   registered.push(name);
 }
 
-/* ── header: title + theme toggle (proves dark/light via theme.ts) ──────── */
+/* ── header: title + theme SWITCHER (proves O(1) theme×mode via theme.ts) ──
+
+   The switcher is the AC-21 proof of the extensible theme platform: one control
+   CYCLES every registered theme (`listThemes()` → redpash / portfolio / numu)
+   via `setTheme(name)`, and a second toggles the mode via `toggleMode()`. Both
+   take the O(1) path (one documentElement attribute write each) — a single
+   attribute flip re-skins the ENTIRE gallery through the CSS cascade, and the
+   chart specimens recolor because they subscribe to `onThemeChange`. No specimen
+   is re-mounted, re-queried, or re-styled by JS on a switch. */
 
 function mountHeader(): void {
   const header = el("header", { class: "amu-showcase-header" });
   header.append(el("h1", { class: "amu-showcase-h1" }, "amenan-ui — component showcase"));
 
   const label = el("span", { class: "amu-showcase-theme-label" }, `${getTheme()} · ${getMode()}`);
+  const sync = (): void => {
+    label.textContent = `${getTheme()} · ${getMode()}`;
+  };
+
+  // Theme cycle — walks listThemes() and writes the next via setTheme (O(1)).
+  const themes = listThemes();
+  const nextTheme = (): string => {
+    const i = themes.indexOf(getTheme());
+    return themes[(i + 1) % themes.length] ?? themes[0]!;
+  };
+  const themeBtn = button({
+    label: `Theme: ${getTheme()}`,
+    icon: "bi-palette",
+    title: `Cycle theme (${themes.join(" → ")})`,
+    onClick: () => {
+      setTheme(nextTheme()); // one html[data-theme] write → whole gallery re-skins
+      themeBtn.textContent = `Theme: ${getTheme()}`;
+      sync();
+    },
+  });
+
+  // Mode toggle — flips dark↔light via toggleMode (O(1)).
   const toggleBtn = button({
     label: "Toggle mode",
     icon: "bi-circle-half",
     onClick: () => {
-      toggleMode();
-      label.textContent = `${getTheme()} · ${getMode()}`;
+      toggleMode(); // one html[data-mode] write
+      sync();
     },
   });
-  const controls = el("div", { class: "amu-showcase-controls" }, toggleBtn, label);
+
+  const controls = el("div", { class: "amu-showcase-controls" }, themeBtn, toggleBtn, label);
   header.append(controls);
   app!.appendChild(header);
 }
@@ -428,6 +466,57 @@ function showcaseLeaf(): void {
   });
 }
 
+/* ── W3 fold-in tier (ported from web-kit; AC-17/AC-20) ──────────────────── */
+
+function showcaseFoldIn(): void {
+  // termbar — the Console top strip, wired to theme.ts (its toggle drives
+  // toggleMode(); the ☀/☾ label tracks getMode() via onThemeChange).
+  const term = section(
+    "termbar",
+    "FOLD-IN — Console top strip (dots + wordmark + cwd + status pill + the theme.ts mode toggle).",
+  );
+  mountTermbar(row(term, "termbar"), { cwd: "~/amenan-ui", status: "● client-side" });
+
+  // tabs — calm view switcher; both the underline + segmented variants.
+  const tabs = section("tabs", "FOLD-IN — calm view switcher (underline + segmented; controlled/uncontrolled).");
+  mountTabs(row(tabs, "underline (default)"), {
+    items: [
+      { id: "list", label: "List", count: 12 },
+      { id: "board", label: "Board" },
+      { id: "calendar", label: "Calendar" },
+    ],
+    defaultValue: "list",
+    onChange: (id) => toast({ message: `tab → ${id}` }),
+  });
+  mountTabs(row(tabs, "segmented"), {
+    items: [
+      { id: "day", label: "Day" },
+      { id: "week", label: "Week" },
+      { id: "month", label: "Month" },
+    ],
+    variant: "segmented",
+    defaultValue: "week",
+  });
+
+  // code — inline / block monospace snippet.
+  const code = section("code", "FOLD-IN — inline / block monospace snippet (tone + truncate).");
+  const cslot = row(code, "inline (default / accent / muted)");
+  mountCode(cslot, { text: "setTheme(\"portfolio\")" });
+  mountCode(cslot, { text: "--signal", tone: "accent" });
+  mountCode(cslot, { text: "amu-theme", tone: "muted" });
+  mountCode(row(code, "block (multi-line)"), {
+    text: "import { setTheme, toggleMode } from \"amenan-ui\";\nsetTheme(\"portfolio\");\ntoggleMode();",
+    block: true,
+  });
+
+  // kindLabel — column-type tag (Int / Float / Bool / Text) × text/chip.
+  const kind = section("kindLabel", "FOLD-IN — datatable column-type tag (Int/Float/Bool/Text × text/chip).");
+  const kt = row(kind, "text variant");
+  for (const k of ["Int", "Float", "Bool", "Text"] as const) mountKindLabel(kt, { kind: k });
+  const kc = row(kind, "chip variant");
+  for (const k of ["Int", "Float", "Bool", "Text"] as const) mountKindLabel(kc, { kind: k, variant: "chip" });
+}
+
 /* ── composed / layout tier (W4) ─────────────────────────────────────────── */
 
 function showcaseComposed(): void {
@@ -588,6 +677,12 @@ function showcaseData(): void {
   mountPermCell(ph, { value: "rw" });
   mountPermCell(ph, { value: "" });
 
+  // perm-cell cap (AC-18) — a ceiled cell (cap:"r" cycles none↔r, never rw) and
+  // a permanently-LOCKED guardrail (cap:"" stamps data-locked, click is a no-op).
+  const cap = row(perm, "perm-cell cap (ceiled + locked)");
+  mountPermCell(cap, { value: "r", cap: "r", onChange: (next) => toast({ message: `ceiled → ${next || "none"}` }) });
+  mountPermCell(cap, { value: "", cap: "" });
+
   // omni (injected source)
   const omni = section("omni", "DATA — omnisearch via an injected Source (MOCK, in-memory).");
   const oh = row(omni, "omni (type to search)");
@@ -690,6 +785,7 @@ function showcaseRegistry(): void {
 
 mountHeader();
 showcaseLeaf();
+showcaseFoldIn();
 showcaseComposed();
 showcaseData();
 showcaseRegistry();

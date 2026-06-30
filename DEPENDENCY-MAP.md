@@ -6,13 +6,13 @@ nothing of any concrete service; components depend on the contract, never the
 reverse.
 
 ```
-            kernel            theme
-        (dom · format ·   (tokens.css ·
-            events)          theme.ts)
-              │                  │
-              └────────┬─────────┘
-                       ▼
-                   contract
+            kernel               theme platform
+        (dom · format ·       (base.css + themes/*.css
+         events · responsive)   · theme.ts)
+              │                       │
+              └───────────┬───────────┘
+                          ▼
+                       contract
         (mount · service · page-spec ·
          route · theme · index · toMount)
                        │
@@ -25,10 +25,19 @@ reverse.
 ```
 
 - **kernel** — `dom` (the `el`/`esc`/`qs` builder), `format` (`initials`/
-  `fmtDateTime`), `events` (error capture). Zero imports of anything else;
+  `fmtDateTime`), `events` (error capture), `responsive` (device-class +
+  breakpoint signals via matchMedia — `device`/`breakpoint`/`isTouch`/`isShort`/
+  `isFolded`/`onChange` + `BREAKPOINTS`; its px values are the JS source of truth
+  aligned to base.css's `--bp-*` rem tokens). Zero imports of anything else;
   `events` never imports a service (recursion guard).
-- **theme** — `tokens.css` (the `--*` vocabulary) + `theme.ts` (the
-  `applyTheme`/`getTheme`/`onThemeChange` seam). Imports nothing.
+- **theme platform** — `base.css` (the theme-agnostic STRUCTURE tier: spacing,
+  radius, type scale, density, motion, breakpoints, z-index, shared `--font-mono`)
+  + `themes/{redpash,portfolio,numu,_template}.css` (each fills the frozen `--*`
+  token contract per theme × mode under `html[data-theme="<name>"][data-mode]`) +
+  `theme.ts` (the open-ended two-axis seam: `setTheme`/`setMode`/`toggleMode`/
+  `getTheme`/`getMode`/`listThemes`/`onThemeChange`/`prePaintSnippet`). `styles.css`
+  is the single `@import` manifest (`base.css` then every theme, then components);
+  the build flattens it into `dist/tokens.css`. `theme.ts` imports nothing.
 - **contract** — the types every component conforms to: `Mount`/`MountHandle`/
   `MountCtx`, `Service`/`Source`, `PageSpec`/`RailSpec`/`SurfaceSpec`,
   `RouteMap`/`Guard`/`Router`, plus the `toMount` adapter. Imports only kernel +
@@ -38,7 +47,10 @@ reverse.
   (the behavior registry over an injected persistence sink). Imports the
   contract; never imports a concrete service.
 - **components** — each is `src/components/<name>/<name>.ts` (+ `<name>.css`),
-  classified below. All 36 ship.
+  classified below. The W3 fold-in adds four web-kit ports
+  (termbar / tabs / code / kindLabel), renamed to the `.amu-*` discipline with
+  co-located sheets `@import`ed by `styles.css` (NOT injected `<style>` tags) and
+  built on the kernel `el`; `perm-cell` also gains a `cap` ceiling.
 - **page-assembly** + **router** — the composition layer: `assemblePage` builds a
   page from a `PageSpec`; `createRouter` drives a `RouteMap` with a guard chain.
   Both spec-driven and injection-fed — no fetch, no hardwired nav.
@@ -52,11 +64,12 @@ reverse.
 - **LEAF** — pure DOM, no domain, no service: atoms (button/chip/input/…), card,
   empty-state, modal, menu, select, toast, stat, field, chip-row, pager, surface,
   markdown, uploader, score-badge, side-panel, dashboard-grid, grid-toolbar,
-  report-builder, settings-form.
+  report-builder, settings-form, tabs, code, kindLabel.
 - **COMPOSED** — layout/theme-only (reads tokens, no service): chart (+ theme
   palette), filter-panel (+ filter-node algebra), grid-view, redtable
   (+ virtual-rows + editor-registry), column-manager, joins-wizard, sql-editor,
-  steps-panel, workspace-panels, topbar, rail.
+  steps-panel, workspace-panels, topbar, rail, termbar (the Console strip — reads
+  `theme.ts` mode + drives `toggleMode()`).
 - **DATA** — service-coupled via the seam (`ctx.service` / injected `source` /
   `onAction` callbacks): rail-data, object-list, message-thread, omni,
   chart-editor, perm-cell.
