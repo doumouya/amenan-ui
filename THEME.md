@@ -21,10 +21,25 @@ restyles by overriding the custom properties, never by forking a sheet.
 - No migration from any prior key is performed — a clean slate keyed on
   `amu-theme`.
 
+## The prefix-strip mapping (lossless 1:1)
+
+Every token below was derived by a **lossless 1:1 prefix-strip**: the upstream
+namespace-prefixed name `--<ns>-X` becomes `--X` (the namespace segment removed,
+nothing else changed — no value altered, no token dropped or merged). Reading the
+mapping is mechanical: prepend the original namespace prefix to any `--*` token in
+the tables below to recover its source name. The token *names* are therefore the
+swappable public schema, and the default values are kept verbatim. The full
+resulting `--*` vocabulary (the right-hand side of the mapping) is the two tables
+that follow.
+
+The theme selectors were renamed the same lossless way: the upstream prefixed
+dark/light selectors became `html[data-theme="dark"]` / `html[data-theme="light"]`
+(dark = the `:root` default), and the prefixed alias selectors were dropped.
+
 ## Token families
 
 Tier 1 (`:root`) is structure — theme-agnostic. Tier 2 is the per-theme palette.
-The structural and palette tokens, in full:
+The structural and palette tokens — the complete `--*` vocabulary — in full:
 
 ### Tier 1 — structure (`:root`)
 

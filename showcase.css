@@ -1,0 +1,98 @@
+/* showcase.css — gallery-only chrome for index.html (the showcase host). Lives at
+   the repo ROOT (outside src/), so it is NOT flattened into dist/tokens.css and is
+   NOT part of the @import manifest — it styles only the specimen scaffolding the
+   showcase entry builds, never a shipped component. Tokens only (no color
+   literals); the `.amu-showcase-*` namespace is owned solely by this sheet. */
+
+#app {
+  display: block;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: var(--sp-4);
+}
+
+.amu-showcase-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-4);
+}
+
+.amu-showcase-h1 {
+  font-size: var(--text-2xl);
+  margin: 0;
+}
+
+.amu-showcase-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.amu-showcase-theme-label {
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  font-family: var(--font-mono);
+}
+
+.amu-showcase-spec {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-4);
+}
+
+.amu-showcase-spec-title {
+  font-size: var(--text-lg);
+  margin: 0 0 var(--sp-1);
+}
+
+.amu-showcase-spec-note {
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  margin: 0 0 var(--sp-3);
+}
+
+.amu-showcase-spec-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.amu-showcase-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.amu-showcase-row-label {
+  color: var(--text-mute);
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.amu-showcase-row-slot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.amu-showcase-reglist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--sp-1) var(--sp-3);
+  list-style: none;
+  padding: 0;
+  margin: var(--sp-2) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}

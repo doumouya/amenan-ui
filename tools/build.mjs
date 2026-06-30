@@ -7,11 +7,12 @@
         dist/tokens.css — byte-faithful to the dev cascade;
      2. emit the .d.ts surface via `tsc -p tsconfig.build.json` → dist/types/;
      3. esbuild src/showcase.ts → dist/showcase.js and src/app.ts → dist/app.js
-        (bundle, esm) — SKIPPED while those entries don't exist yet (W0–W6:
-        they land in W6; this step auto-activates then);
+        (bundle, esm, browser/es2022) — the two W6 proof entries;
      4. module-graph self-check — every static/dynamic import literal in a
-        shipped bundle resolves (esbuild fails the build on an unresolved import,
-        so a typo 404s the BUILD, not runtime).
+        shipped bundle must resolve. esbuild's bundler IS that check: an
+        unresolved import literal aborts the build with a non-zero exit, so a
+        typo 404s the BUILD, not runtime. The step also asserts BOTH entries are
+        present (W6 finalize): a missing showcase/app entry fails the build.
 
    Zero runtime deps: esbuild + typescript are devDependencies only. */
 
@@ -61,33 +62,48 @@ execFileSync("npx", ["tsc", "-p", "tsconfig.build.json"], {
 });
 console.log("build: emitted dist/types/ (tsc -p tsconfig.build.json)");
 
-/* ── 3. esbuild the entry bundles (when they exist) ───────────────────── */
+/* ── 3. esbuild the entry bundles (W6: both proof entries must exist) ──── */
 const entries = [
   { src: join(ROOT, "src", "showcase.ts"), out: join(DIST, "showcase.js") },
   { src: join(ROOT, "src", "app.ts"), out: join(DIST, "app.js") },
 ];
-const present = entries.filter((e) => existsSync(e.src));
-if (present.length === 0) {
-  console.log("build: no showcase/app entry yet — bundling deferred to W6 (CSS + types only)");
-} else {
-  /* esbuild's bundler IS the module-graph self-check (step 4): an unresolved
-     static or dynamic import literal aborts the build with a non-zero exit. */
-  for (const e of present) {
-    execFileSync(
-      "npx",
-      [
-        "esbuild",
-        e.src,
-        "--bundle",
-        "--format=esm",
-        "--platform=browser",
-        "--target=es2022",
-        `--outfile=${e.out}`,
-      ],
-      { cwd: ROOT, stdio: "inherit" },
-    );
-    console.log(`build: bundled ${e.src} → ${e.out}`);
-  }
+const missing = entries.filter((e) => !existsSync(e.src));
+if (missing.length) {
+  console.error(
+    `build: missing proof entry/entries — ${missing.map((m) => m.src).join(", ")}`,
+  );
+  process.exit(1);
+}
+/* esbuild's bundler IS the module-graph self-check (step 4): an unresolved
+   static or dynamic import literal aborts the build with a non-zero exit. */
+for (const e of entries) {
+  execFileSync(
+    "npx",
+    [
+      "esbuild",
+      e.src,
+      "--bundle",
+      "--format=esm",
+      "--platform=browser",
+      "--target=es2022",
+      `--outfile=${e.out}`,
+    ],
+    { cwd: ROOT, stdio: "inherit" },
+  );
+  console.log(`build: bundled ${e.src} → ${e.out}`);
+}
+
+/* ── 4b. assert every shipped artifact landed (defensive) ─────────────── */
+const artifacts = [
+  join(DIST, "tokens.css"),
+  join(DIST, "showcase.js"),
+  join(DIST, "app.js"),
+  join(DIST, "types", "index.d.ts"),
+];
+const lost = artifacts.filter((a) => !existsSync(a));
+if (lost.length) {
+  console.error(`build: expected artifact(s) not produced — ${lost.join(", ")}`);
+  process.exit(1);
 }
 
 console.log("build: OK");

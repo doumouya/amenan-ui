@@ -82,8 +82,43 @@ router.start();
 | COMPOSED | chart, filter-panel, grid-view, redtable, column-manager, joins-wizard, sql-editor, steps-panel, workspace-panels, topbar, rail |
 | DATA | rail-data, object-list, message-thread, omni, chart-editor, perm-cell |
 
-(Components land in waves W3–W5; the foundation — kernel, contract, theme,
-registries, page-assembly, router — is what this milestone's first waves ship.)
+All 36 components ship, plus the foundation (kernel, contract, theme, registries,
+page-assembly, router) and the optional, injected-wasm-path engine (wasm-engine +
+window-source). LEAF components are pure DOM; COMPOSED read theme tokens only;
+DATA components decouple every backend coupling behind an injected
+`source`/`send`/`onAction` callback (the Service/Source seam) — no transport,
+no fetch, no route literal anywhere in the library.
+
+## Theme toggle
+
+`theme.ts` is the only runtime that reads/writes the choice:
+
+```ts
+import { applyTheme, getTheme, onThemeChange } from "amenan-ui";
+
+applyTheme(getTheme() === "dark" ? "light" : "dark"); // toggle + persist
+onThemeChange((name) => console.log("theme is now", name));
+```
+
+The choice persists under `localStorage["amu-theme"]`; embed `prePaintSnippet` in
+`<head>` so the persisted theme is applied before first paint (no FOUC).
+
+## Proof — showcase + app
+
+Two entries prove the library standalone, with zero network:
+
+- **`src/showcase.ts`** → `dist/showcase.js` — a specimen gallery mounting EVERY
+  component (data/RBAC ones fed in-memory MOCK sources via the seam), with a
+  light/dark toggle. Host page: `index.html`. The chart specimens render a real
+  ECharts tile when `vendor/echarts/echarts.min.js` is on the page (graceful
+  empty placeholder otherwise); the engine specimen demos the clean no-wasm path.
+- **`src/app.ts`** → `dist/app.js` — a standalone proof app: one `assemblePage`
+  page (surface + a literal rail) wired to a 2-route `createRouter` (no guards).
+  Host page: `app.html`.
+
+Open `index.html` / `app.html` after `npm run build`. The vendored Bootstrap
+Icons + ECharts under `vendor/` are static assets (NOT npm deps) — the showcase
+links them so `bi-*` glyphs and charts render.
 
 ## The seams
 

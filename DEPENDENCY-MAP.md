@@ -38,10 +38,14 @@ reverse.
   (the behavior registry over an injected persistence sink). Imports the
   contract; never imports a concrete service.
 - **components** — each is `src/components/<name>/<name>.ts` (+ `<name>.css`),
-  classified below. (Added in waves W3–W5.)
+  classified below. All 36 ship.
 - **page-assembly** + **router** — the composition layer: `assemblePage` builds a
   page from a `PageSpec`; `createRouter` drives a `RouteMap` with a guard chain.
   Both spec-driven and injection-fed — no fetch, no hardwired nav.
+- **engine** (optional) — `wasm-engine` (the lazy loader behind an INJECTED wasm
+  path) + `window-source` (a dual-source grid data layer behind the Service seam).
+  Ships no wasm binary; with no path + no callbacks it degrades to empty/null (no
+  throw, no log). Depends only on itself + the contract; nothing depends on it.
 
 ## Component classification
 
@@ -60,3 +64,11 @@ reverse.
 A COMPOSED component imports the LEAF atoms it needs; it never re-implements one.
 A DATA component reaches data only through the injected seam — never a hardwired
 transport.
+
+## Proof entries
+
+`src/showcase.ts` and `src/app.ts` sit ABOVE every layer (they import the public
+barrel `src/index.ts`) and are never imported by the library. `showcase.ts` mounts
+every component (DATA ones fed in-memory MOCK sources via the seam); `app.ts`
+builds one `assemblePage` page wired to a 2-route `createRouter`. The build bundles
+them to `dist/showcase.js` / `dist/app.js`; `index.html` / `app.html` host them.
