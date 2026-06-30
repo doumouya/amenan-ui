@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>amenan-ui — showcase</title>
+
+    <!-- Pre-paint theme snippet (AC-B3): read amu-theme and set data-theme BEFORE
+         first paint to prevent a flash of the default theme. Kept byte-equal to
+         theme.ts `prePaintSnippet`. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("amu-theme");
+          if (t === "dark" || t === "light") {
+            document.documentElement.setAttribute("data-theme", t);
+          }
+        } catch (e) {}
+      })();
+    </script>
+
+    <!-- Vendored static assets (AC-A7): icons + echarts. Not npm deps. -->
+    <link rel="stylesheet" href="vendor/bootstrap-icons/bootstrap-icons.css" />
+    <!-- Theme tokens + flattened component CSS. In dev this is the @import
+         manifest; the build emits dist/tokens.css. -->
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="vendor/echarts/echarts.min.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- The showcase entry (built to dist/showcase.js in W6). -->
+    <script type="module" src="dist/showcase.js"></script>
+  </body>
+</html>

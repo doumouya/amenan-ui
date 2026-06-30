@@ -1,0 +1,12 @@
+/* styles.css — the dev @import MANIFEST and the ONLY file allowed to contain
+   @import (ui-fork-audit R6). Manifest order IS cascade order: tokens first,
+   then the shell, then component sheets (added by later waves). The build
+   (tools/build.mjs) flattens this tree into dist/tokens.css byte-faithfully. */
+
+/* ── tokens (must precede every component sheet) ── */
+@import "src/theme/tokens.css";
+
+/* ── shell ── */
+@import "src/page-assembly.css";
+
+/* ── components (added in W3–W5) ── */

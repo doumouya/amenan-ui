@@ -1,0 +1,27 @@
+{
+  "name": "amenan-ui",
+  "version": "0.1.0",
+  "type": "module",
+  "private": false,
+  "description": "A standalone, dependency-free, theme-agnostic vanilla-TS UI framework: a dom builder, three registries, declarative page-assembly, a generic hash router, and a component library — with one CI-enforced single-CSS-ownership discipline.",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./src/index.ts"
+    },
+    "./tokens.css": "./dist/tokens.css"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node tools/build.mjs",
+    "test": "node --test tests/*.test.ts",
+    "audit": "sh tools/ci-audit/check.sh",
+    "scrub": "node tools/scrub.mjs",
+    "ci": "sh tools/ci.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "esbuild": "^0.23.0",
+    "typescript": "^5.5.0"
+  }
+}

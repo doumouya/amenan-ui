@@ -1,0 +1,27 @@
+/* page-assembly.css — the shell frame owned by page-assembly. Single-owner of
+   the .amu-shell* namespace (ui-fork-audit R4). The shell is a topbar over a
+   body that lays the rail beside the surface; section hosts stack inside the
+   surface. Tokens only — no color literals, no overrides, no id selectors. */
+
+.amu-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+.amu-shell-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.amu-shell-section {
+  display: block;
+}
+
+.amu-shell-section + .amu-shell-section {
+  margin-top: var(--sp-4);
+}

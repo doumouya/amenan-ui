@@ -1,0 +1,107 @@
+/* tokens.css — the design system's single vocabulary (two tiers).
+   Tier 1 STRUCTURE (:root): spacing, radius, type, motion, density rhythm —
+   theme-agnostic. Tier 2 PALETTE: per-theme blocks remap the SAME --* names,
+   keyed on html[data-theme]. Two themes only: dark (default) + light.
+   The token NAMES are the package's swappable public schema — a consumer
+   restyles by overriding --bg/--accent/… without forking a sheet. */
+
+:root {
+  /* spacing scale */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-8: 3rem;
+
+  /* radius (px on purpose — corners don't scale with font size) */
+  --radius-sm: 7px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* type */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2.25rem;
+
+  /* density rhythm — the Linear-calm knob set. Components consume these;
+     density attrs retune them globally (one knob, not per-sheet). */
+  --row-h: 2.25rem;      /* 36px table/list rows */
+  --ctl-h: 2rem;         /* 32px controls (buttons, inputs) */
+  --pad-x: 0.75rem;      /* horizontal cell/control padding */
+  --gap: 0.5rem;         /* default flex/grid gap */
+  --topbar-h: 3.25rem;   /* 52px */
+  --rail-w: 15rem;       /* 240px, fixed — no icon-only collapse */
+
+  /* motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --fast: 0.12s;
+  --slow: 0.22s;
+
+  /* breakpoints — the documented source of truth. CSS can't var() inside a
+     @media query, so each media rule repeats the rem literal and tags it with
+     the matching token name in a comment to stay grep-synced. Floor = iPad Mini
+     landscape (1024x768 = 64rem).
+       --bp-lg 80rem (1280px): below, side panels overlay
+       --bp-md 64rem (1024px): the FLOOR; below, the rail also drawers
+       --bp-sm 48rem  (768px): portrait safety net (kept usable, not a target) */
+  --bp-lg: 80rem;
+  --bp-md: 64rem;
+  --bp-sm: 48rem;
+}
+
+/* ── dark (default) ───────────────────────────────────────────────────── */
+:root,
+html[data-theme="dark"] {
+  --bg: #0c0d10;
+  --surface: #15171b;
+  --surface-2: #1c1f25;
+  --border: #2a2e37;
+  --text: #e6e8ec;
+  --text-dim: #a0a6b0;
+  --text-mute: #6b7280;
+  --accent: #f04438;
+  --accent-soft: rgba(240, 68, 56, 0.14);
+  --on-accent: #ffffff;
+  --ok: #2dd4a7;
+  --warn: #f5b14c;
+  --info: #5b8def;
+  --danger: #ff5c5c;
+  --hover: rgba(255, 255, 255, 0.05);
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-blur: 14px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --ring: 0 0 0 1px var(--border);
+  color-scheme: dark;
+}
+
+/* ── light ────────────────────────────────────────────────────────────── */
+html[data-theme="light"] {
+  --bg: #fafafb;
+  --surface: #ffffff;
+  --surface-2: #f4f5f7;
+  --border: #e4e7ec;
+  --text: #1a1d23;
+  --text-dim: #5a6170;
+  --text-mute: #9aa1ad;
+  --accent: #f04438;
+  --accent-soft: rgba(240, 68, 56, 0.1);
+  --on-accent: #ffffff;
+  --ok: #0e9f6e;
+  --warn: #c27803;
+  --info: #3f66d4;
+  --danger: #e02424;
+  --hover: rgba(16, 24, 40, 0.04);
+  --glass: rgba(255, 255, 255, 0.65);
+  --glass-blur: 14px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --ring: 0 0 0 1px var(--border);
+  color-scheme: light;
+}
