@@ -1,22 +1,16 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="redpash" data-mode="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>amenan-ui — proof app</title>
 
-    <!-- Pre-paint theme snippet (AC-B3): read amu-theme and set data-theme BEFORE
-         first paint to prevent a flash of the default theme. Kept byte-equal to
-         theme.ts `prePaintSnippet`. -->
+    <!-- Pre-paint theme snippet (AC-B3): read amu-theme + amu-mode (with the
+         legacy "dark"/"light" → mode migration) and set BOTH data-theme +
+         data-mode BEFORE first paint to prevent a flash of the default theme.
+         Kept byte-equal to theme.ts `prePaintSnippet`. -->
     <script>
-      (function () {
-        try {
-          var t = localStorage.getItem("amu-theme");
-          if (t === "dark" || t === "light") {
-            document.documentElement.setAttribute("data-theme", t);
-          }
-        } catch (e) {}
-      })();
+      (function(){try{var t=localStorage.getItem("amu-theme");var m=localStorage.getItem("amu-mode");var d=document.documentElement;var isMode=function(v){return v==="dark"||v==="light";};if(!isMode(m)){m=isMode(t)?t:"dark";}var theme=(t&&!isMode(t))?t:"redpash";d.setAttribute("data-theme",theme);d.setAttribute("data-mode",m);}catch(e){}})();
     </script>
 
     <!-- Vendored static assets (AC-A7): icons. Not npm deps. -->

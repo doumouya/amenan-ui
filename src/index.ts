@@ -36,9 +36,20 @@ export type {
 } from "./contract/index.ts";
 export { toMount } from "./contract/index.ts";
 
-// Theme.
-export type { ThemeName } from "./theme/theme.ts";
-export { applyTheme, getTheme, onThemeChange, THEME_KEY, prePaintSnippet } from "./theme/theme.ts";
+// Theme — the open-ended two-axis API (theme NAME × mode).
+export type { ThemeName, Mode } from "./theme/theme.ts";
+export {
+  THEME_KEY,
+  MODE_KEY,
+  listThemes,
+  getTheme,
+  getMode,
+  setTheme,
+  setMode,
+  toggleMode,
+  onThemeChange,
+  prePaintSnippet,
+} from "./theme/theme.ts";
 
 // Registries.
 export { register, getComponent, listComponents } from "./registry/component-registry.ts";

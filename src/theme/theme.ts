@@ -1,38 +1,88 @@
-/* theme.ts — the theme seam. amenan-ui ships a two-theme palette (dark default +
-   light) keyed on `html[data-theme]`; this module is the only runtime that
-   reads/writes the choice. No service, no framework: just the document attribute
-   + a localStorage mirror under the `amu-theme` key.
+/* theme.ts — the open-ended TWO-AXIS theme seam (AC-10). amenan-ui is an
+   extensible theme platform: a `theme` NAME (redpash / portfolio / numu / any
+   future client) × a `mode` (dark | light), keyed on
+   `html[data-theme="<name>"]` × `html[data-mode="<mode>"]`. This module is the
+   only runtime that reads/writes the choice — no service, no framework: two
+   document attributes + a localStorage mirror under `amu-theme` + `amu-mode`.
 
-   `prePaintSnippet` is the inline <head> script SOURCE a host embeds before
-   first paint so the persisted theme is applied with zero FOUC. */
+   The switch is O(1) (AC-8): setTheme/setMode write EXACTLY one documentElement
+   attribute + one localStorage entry + fire listeners — nothing else (no DOM
+   query of components, no style loop, no re-mount). Everything else re-resolves
+   through the CSS cascade; the sole allowed JS reaction is the chart canvas
+   (chart/theme.ts re-reads tokens via getComputedStyle).
 
-export type ThemeName = "dark" | "light";
+   Back-compat (AC-5): a legacy single-axis persisted `amu-theme` of "dark"/"light"
+   (no `amu-mode`) is interpreted as the MODE, with the theme recovered to
+   "redpash" — the old default look still renders, and the platform writes the
+   two-axis attributes going forward.
 
-/** The localStorage key the choice persists under. */
+   `prePaintSnippet` is the inline <head> script SOURCE a host embeds before first
+   paint so the persisted theme+mode are applied with zero FOUC. */
+
+/** A theme NAME — ANY registered theme. Open-ended (not a closed union). */
+export type ThemeName = string;
+/** The light/dark axis. */
+export type Mode = "dark" | "light";
+
+/** localStorage key — persists the theme NAME. */
 export const THEME_KEY = "amu-theme";
+/** localStorage key — persists the MODE. */
+export const MODE_KEY = "amu-mode";
 
-/** The fallback when nothing is persisted (matches the :root default). */
-const DEFAULT_THEME: ThemeName = "dark";
+/** Fallbacks when nothing is persisted (match the :root default = redpash+dark). */
+const DEFAULT_THEME: ThemeName = "redpash";
+const DEFAULT_MODE: Mode = "dark";
 
-const listeners = new Set<(name: ThemeName) => void>();
+/** The registered theme names, in showcase-cycle order. Static list — NO DOM
+    scan (the O(1) guarantee: switching never enumerates the document). Adding a
+    theme appends its name here (see the THEME.md add-a-theme recipe). */
+const THEMES: readonly ThemeName[] = ["redpash", "portfolio", "numu"];
 
-function isThemeName(v: unknown): v is ThemeName {
+/** The registered theme names, in showcase-cycle order. */
+export function listThemes(): ThemeName[] {
+  return [...THEMES];
+}
+
+const listeners = new Set<(theme: ThemeName, mode: Mode) => void>();
+
+function isMode(v: unknown): v is Mode {
   return v === "dark" || v === "light";
 }
 
-/** Read the persisted theme → default `dark`. Tolerant of no-localStorage. */
-export function getTheme(): ThemeName {
+/** Read a persisted localStorage value, tolerant of no-storage (private mode /
+    worker). Never throws. */
+function read(key: string): string | null {
   try {
-    const v = localStorage.getItem(THEME_KEY);
-    if (isThemeName(v)) return v;
+    return localStorage.getItem(key);
   } catch {
-    /* private mode / no storage — fall through to the default */
+    return null;
   }
+}
+
+/** Read the persisted theme NAME → default "redpash". A LEGACY single-axis value
+    ("dark"/"light") persisted under amu-theme is NOT a theme — it is the old
+    mode value, so the theme recovers to the default (AC-5). */
+export function getTheme(): ThemeName {
+  const t = read(THEME_KEY);
+  if (t && !isMode(t)) return t;
   return DEFAULT_THEME;
 }
 
-/** Set `html[data-theme]`, persist under `amu-theme`, and notify listeners. */
-export function applyTheme(name: ThemeName): void {
+/** Read the persisted MODE → default "dark". Back-compat (AC-5): if amu-mode is
+    absent but amu-theme holds a legacy "dark"/"light", interpret THAT as the
+    mode. */
+export function getMode(): Mode {
+  const m = read(MODE_KEY);
+  if (isMode(m)) return m;
+  const legacy = read(THEME_KEY);
+  if (isMode(legacy)) return legacy;
+  return DEFAULT_MODE;
+}
+
+/** O(1): write html[data-theme], persist amu-theme, fire listeners. Nothing else
+    (no component DOM scan, no style mutation, no re-mount). Accepts ANY
+    registered theme name. */
+export function setTheme(name: ThemeName): void {
   try {
     document.documentElement.dataset.theme = name;
   } catch {
@@ -43,18 +93,42 @@ export function applyTheme(name: ThemeName): void {
   } catch {
     /* quota / private mode — the attribute is set regardless */
   }
-  for (const fn of listeners) fn(name);
+  const mode = getMode();
+  for (const fn of listeners) fn(name, mode);
 }
 
-/** Subscribe to theme changes; returns an unsubscribe. */
-export function onThemeChange(fn: (name: ThemeName) => void): () => void {
+/** O(1): write html[data-mode], persist amu-mode, fire listeners. Nothing else. */
+export function setMode(mode: Mode): void {
+  try {
+    document.documentElement.dataset.mode = mode;
+  } catch {
+    /* no document — persistence still happens below */
+  }
+  try {
+    localStorage.setItem(MODE_KEY, mode);
+  } catch {
+    /* quota / private mode — the attribute is set regardless */
+  }
+  const theme = getTheme();
+  for (const fn of listeners) fn(theme, mode);
+}
+
+/** O(1): flip the mode (dark↔light) via setMode. */
+export function toggleMode(): void {
+  setMode(getMode() === "dark" ? "light" : "dark");
+}
+
+/** Subscribe to theme/mode changes; fn receives BOTH axes on every change.
+    Returns an unsubscribe. */
+export function onThemeChange(fn: (theme: ThemeName, mode: Mode) => void): () => void {
   listeners.add(fn);
   return () => {
     listeners.delete(fn);
   };
 }
 
-/** The inline <head> script SOURCE: reads `amu-theme` and sets `data-theme`
-    before first paint to prevent a flash of the default theme. A host embeds
-    this verbatim inside a <script> in <head>. Self-contained (no imports). */
-export const prePaintSnippet: string = `(function(){try{var t=localStorage.getItem("${THEME_KEY}");if(t==="dark"||t==="light"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();`;
+/** The inline <head> script SOURCE: reads amu-theme + amu-mode (WITH the legacy
+    "dark"/"light" → mode migration of AC-5) and sets BOTH data-theme + data-mode
+    before first paint to prevent a flash of the default theme. Self-contained
+    (no imports); a host embeds this verbatim inside a <script> in <head>. */
+export const prePaintSnippet: string = `(function(){try{var t=localStorage.getItem("${THEME_KEY}");var m=localStorage.getItem("${MODE_KEY}");var d=document.documentElement;var isMode=function(v){return v==="dark"||v==="light";};if(!isMode(m)){m=isMode(t)?t:"${DEFAULT_MODE}";}var theme=(t&&!isMode(t))?t:"${DEFAULT_THEME}";d.setAttribute("data-theme",theme);d.setAttribute("data-mode",m);}catch(e){}})();`;

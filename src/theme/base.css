@@ -1,0 +1,73 @@
+/* base.css — the theme-platform STRUCTURE tier (AC-1). Theme-AGNOSTIC :root
+   scales every theme shares: spacing, radius, the shared mono family, the type
+   scale, density rhythm, motion, breakpoints, and z-index. It carries NO
+   color/palette/`--font`-family/`--shadow` *value* token — those are per-theme
+   (the palette tier, in src/theme/themes/<name>.css under the two-axis selector).
+
+   This file is the structure half of the old tokens.css :root block; the palette
+   half moved into the per-theme files. base.css defines no .amu-* class — it is
+   theme-tier, excluded from the audit's R4 ownership exactly as tokens.css was. */
+
+:root {
+  /* spacing scale */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-8: 3rem;
+
+  /* radius (px on purpose — corners don't scale with font size) */
+  --radius-sm: 7px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* the shared mono family (structural — data/identifiers/code). The per-theme
+     display/body `--font` is a PALETTE token (per theme, e.g. mono-first for
+     portfolio); `--font-mono` is shared structure and stays here. */
+  --font-mono: ui-monospace, "Cascadia Code", "Segoe UI Mono", Consolas, monospace;
+
+  /* type scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.9375rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2.25rem;
+
+  /* density rhythm — the Linear-calm knob set. Components consume these;
+     density attrs retune them globally (one knob, not per-sheet). */
+  --row-h: 2.25rem;      /* 36px table/list rows */
+  --ctl-h: 2rem;         /* 32px controls (buttons, inputs) */
+  --pad-x: 0.75rem;      /* horizontal cell/control padding */
+  --gap: 0.5rem;         /* default flex/grid gap */
+  --topbar-h: 3.25rem;   /* 52px */
+  --rail-w: 15rem;       /* 240px, fixed — no icon-only collapse */
+
+  /* motion */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --fast: 0.12s;
+  --slow: 0.22s;
+
+  /* z-index scale — the stacking contract (overlays above chrome above content) */
+  --z-base: 0;
+  --z-rail: 10;
+  --z-topbar: 20;
+  --z-side-panel: 30;
+  --z-popover: 100;
+  --z-toast: 200;
+  --z-modal: 300;
+
+  /* breakpoints — the documented source of truth. CSS can't var() inside a
+     @media query, so each media rule repeats the rem literal and tags it with
+     the matching token name in a comment to stay grep-synced. Floor = iPad Mini
+     landscape (1024x768 = 64rem).
+       --bp-lg 80rem (1280px): below, side panels overlay
+       --bp-md 64rem (1024px): the FLOOR; below, the rail also drawers
+       --bp-sm 48rem  (768px): portrait safety net (kept usable, not a target) */
+  --bp-lg: 80rem;
+  --bp-md: 64rem;
+  --bp-sm: 48rem;
+}

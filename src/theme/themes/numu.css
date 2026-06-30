@@ -1,0 +1,100 @@
+/* themes/numu.css — the numu WIP slot (AC-11). A REAL, resolvable theme slot:
+   it fills EVERY contract token (AC-13) for BOTH modes so nothing renders an
+   unfilled var(--…) and the showcase can switch to it — but the values are
+   PLACEHOLDERS derived from redpash, each carrying a `/* TODO(numu): … */`
+   marker. numu's true brand tokens land in a later milestone (out of scope here).
+
+   Until then, switching to numu renders a redpash-equivalent look. The TODO
+   markers are the work-list for the numu identity pass. */
+
+/* ── dark ─────────────────────────────────────────────────────────────────── */
+html[data-theme="numu"][data-mode="dark"] {
+  --bg: #0c0d10;        /* TODO(numu): brand background */
+  --surface: #15171b;   /* TODO(numu): brand surface */
+  --surface-2: #1c1f25; /* TODO(numu): brand raised surface */
+  --border: #2a2e37;    /* TODO(numu): brand hairline */
+  --text: #e6e8ec;      /* TODO(numu): brand text */
+  --text-dim: #a0a6b0;  /* TODO(numu): brand dim text */
+  --text-mute: #6b7280; /* TODO(numu): brand muted text */
+  --accent: #f04438;    /* TODO(numu): brand accent */
+  --accent-soft: rgba(240, 68, 56, 0.14); /* TODO(numu): brand accent tint */
+  --on-accent: #ffffff; /* TODO(numu): text on accent */
+  --ok: #2dd4a7;        /* TODO(numu): success hue */
+  --warn: #f5b14c;      /* TODO(numu): warning hue */
+  --info: #5b8def;      /* TODO(numu): info hue */
+  --danger: #ff5c5c;    /* TODO(numu): danger hue */
+  --hover: rgba(255, 255, 255, 0.05); /* TODO(numu): hover wash */
+  --glass: rgba(255, 255, 255, 0.045); /* TODO(numu): glass wash */
+  --glass-blur: 14px;   /* TODO(numu): glass blur radius */
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4); /* TODO(numu): base shadow */
+  --ring: 0 0 0 1px var(--border); /* TODO(numu): focus ring frame */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; /* TODO(numu): brand family */
+  color-scheme: dark;   /* TODO(numu): confirm color-scheme */
+
+  --signal: var(--ok);  /* TODO(numu): brand signal */
+  --signal-hover: #20b78f; /* TODO(numu): signal hover step */
+  --signal-tint: color-mix(in srgb, var(--ok) 14%, transparent); /* TODO(numu): signal tint */
+  --rule: var(--border); /* TODO(numu): structural rule */
+  --rule-shadow: var(--shadow); /* TODO(numu): rule/offset shadow */
+  --focus-ring: var(--accent); /* TODO(numu): focus ring color */
+  --chart-1: #f04438;   /* TODO(numu): chart series 1 */
+  --chart-2: #5b8def;   /* TODO(numu): chart series 2 */
+  --chart-3: #2dd4a7;   /* TODO(numu): chart series 3 */
+  --chart-4: #f5b14c;   /* TODO(numu): chart series 4 */
+  --chart-5: #b692f6;   /* TODO(numu): chart series 5 */
+  --chart-6: #f670c7;   /* TODO(numu): chart series 6 */
+  --chart-7: #7e8794;   /* TODO(numu): chart series 7 */
+  --chart-8: #36bffa;   /* TODO(numu): chart series 8 */
+  --status-backlog: #6b7280;  /* TODO(numu): backlog state */
+  --status-progress: #5b8def; /* TODO(numu): in-progress state */
+  --status-review: #f5b14c;   /* TODO(numu): review state */
+  --status-done: #2dd4a7;     /* TODO(numu): done state */
+  --shadow-popover: var(--shadow); /* TODO(numu): popover elevation */
+  --shadow-dialog: var(--shadow);  /* TODO(numu): dialog elevation */
+}
+
+/* ── light ────────────────────────────────────────────────────────────────── */
+html[data-theme="numu"][data-mode="light"] {
+  --bg: #fafafb;        /* TODO(numu): brand background */
+  --surface: #ffffff;   /* TODO(numu): brand surface */
+  --surface-2: #f4f5f7; /* TODO(numu): brand raised surface */
+  --border: #e4e7ec;    /* TODO(numu): brand hairline */
+  --text: #1a1d23;      /* TODO(numu): brand text */
+  --text-dim: #5a6170;  /* TODO(numu): brand dim text */
+  --text-mute: #9aa1ad; /* TODO(numu): brand muted text */
+  --accent: #f04438;    /* TODO(numu): brand accent */
+  --accent-soft: rgba(240, 68, 56, 0.1); /* TODO(numu): brand accent tint */
+  --on-accent: #ffffff; /* TODO(numu): text on accent */
+  --ok: #0e9f6e;        /* TODO(numu): success hue */
+  --warn: #c27803;      /* TODO(numu): warning hue */
+  --info: #3f66d4;      /* TODO(numu): info hue */
+  --danger: #e02424;    /* TODO(numu): danger hue */
+  --hover: rgba(16, 24, 40, 0.04); /* TODO(numu): hover wash */
+  --glass: rgba(255, 255, 255, 0.65); /* TODO(numu): glass wash */
+  --glass-blur: 14px;   /* TODO(numu): glass blur radius */
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06); /* TODO(numu): base shadow */
+  --ring: 0 0 0 1px var(--border); /* TODO(numu): focus ring frame */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; /* TODO(numu): brand family */
+  color-scheme: light;  /* TODO(numu): confirm color-scheme */
+
+  --signal: var(--ok);  /* TODO(numu): brand signal */
+  --signal-hover: #0b7e58; /* TODO(numu): signal hover step */
+  --signal-tint: color-mix(in srgb, var(--ok) 14%, transparent); /* TODO(numu): signal tint */
+  --rule: var(--border); /* TODO(numu): structural rule */
+  --rule-shadow: var(--shadow); /* TODO(numu): rule/offset shadow */
+  --focus-ring: var(--accent); /* TODO(numu): focus ring color */
+  --chart-1: #f04438;   /* TODO(numu): chart series 1 */
+  --chart-2: #3f66d4;   /* TODO(numu): chart series 2 */
+  --chart-3: #0e9f6e;   /* TODO(numu): chart series 3 */
+  --chart-4: #c27803;   /* TODO(numu): chart series 4 */
+  --chart-5: #7c3aed;   /* TODO(numu): chart series 5 */
+  --chart-6: #db2777;   /* TODO(numu): chart series 6 */
+  --chart-7: #475569;   /* TODO(numu): chart series 7 */
+  --chart-8: #0e7490;   /* TODO(numu): chart series 8 */
+  --status-backlog: #9aa1ad;  /* TODO(numu): backlog state */
+  --status-progress: #3f66d4; /* TODO(numu): in-progress state */
+  --status-review: #c27803;   /* TODO(numu): review state */
+  --status-done: #0e9f6e;     /* TODO(numu): done state */
+  --shadow-popover: var(--shadow); /* TODO(numu): popover elevation */
+  --shadow-dialog: var(--shadow);  /* TODO(numu): dialog elevation */
+}

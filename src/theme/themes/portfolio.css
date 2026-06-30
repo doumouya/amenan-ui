@@ -1,0 +1,118 @@
+/* themes/portfolio.css — the portfolio (Console) theme (AC-9). Ports web-kit's
+   "Datacore Console" identity into the amenan token contract for both modes:
+   near-monochrome ink/paper, ONE green --signal, mono-first --font, a hard 1.5px
+   --rule with a 4px offset block --rule-shadow, and FLAT base elevation (shadows
+   only for floating layers). Values lifted from web-kit
+   src/tokens/colors+charts+elevation+typography + the Console card offset block.
+
+   web-kit keyed light off :root and dark off [data-theme="dark"]; amenan splits
+   that into the two-axis [data-theme="portfolio"][data-mode="dark"|"light"].
+
+   Token map (web-kit → amenan contract):
+     ink/paper        → --bg / --text / --surface*
+     --rule (ink)     → --rule (1.5px ink/paper structural line)
+     --elev (ink)     → carried by --rule-shadow = 4px 4px 0 0 var(--rule)
+     --accent (ink)   → --accent (primary actions are ink)
+     --signal (green) → --signal / --ok / --status-progress / chart-1
+     --shadow-popover/-dialog → web-kit elevation.css
+     --font-sans (mono) → --font (mono-first)
+     --chart-1..8     → web-kit charts.css
+     --status-*       → web-kit workflow states */
+
+/* ── dark — ink surface, paper text, green-400 signal ────────────────────── */
+html[data-theme="portfolio"][data-mode="dark"] {
+  --bg: #0B0B0C;                 /* --ink */
+  --surface: #161618;            /* --gray-900 (surface-overlay tier) */
+  --surface-2: #000000;          /* --surface-sunken */
+  --border: #232327;             /* soft hairline (dividers, rows) */
+  --text: #F2F2F3;
+  --text-dim: #A1A1A6;           /* --gray-400 */
+  --text-mute: #54545A;          /* --text-subtle (dark) */
+  --accent: #F2F2F3;             /* accent = paper-ink in dark (primary actions) */
+  --accent-soft: #232327;        /* --accent-tint (dark) */
+  --on-accent: #0B0B0C;          /* --text-on-accent (dark) = ink */
+  --ok: #34C77B;                 /* --green-400 (success in dark) */
+  --warn: #B7791F;               /* --amber-500 */
+  --info: #22d3ee;               /* cyan series — restrained info */
+  --danger: #D63B3B;             /* --red-500 */
+  --hover: color-mix(in srgb, #F2F2F3 6%, transparent);
+  --glass: color-mix(in srgb, #F2F2F3 4%, transparent);
+  --glass-blur: 0px;             /* Console is FLAT — no glass blur */
+  --shadow: none;                /* base surfaces carry NO drop shadow */
+  --ring: inset 0 0 0 1px var(--border);
+  --font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  color-scheme: dark;
+
+  /* the Console vocabulary */
+  --signal: #34C77B;             /* --green-400 */
+  --signal-hover: #1E9E5A;       /* --green-500 */
+  --signal-tint: color-mix(in srgb, #34C77B 16%, var(--surface));
+  --rule: #F2F2F3;               /* HARD ink structural line (paper-ink in dark) */
+  --rule-shadow: 4px 4px 0 0 var(--rule);  /* the Console card offset block shadow */
+  --focus-ring: #34C77B;         /* --focus = green in dark */
+  --chart-1: var(--signal);      /* brand green — default single series */
+  --chart-2: #22d3ee;
+  --chart-3: #a78bfa;
+  --chart-4: #fbbf24;
+  --chart-5: #f87171;
+  --chart-6: #f472b6;
+  --chart-7: #94a3b8;
+  --chart-8: #2dd4bf;
+  --status-backlog: #A1A1A6;     /* --gray-400 */
+  --status-progress: #34C77B;    /* --green-400 */
+  --status-review: #B7791F;      /* --amber-500 */
+  --status-done: #34C77B;        /* --green-400 */
+  --shadow-popover: 0 4px 12px -2px rgba(15, 23, 42, 0.12),
+                    0 2px 4px -2px rgba(15, 23, 42, 0.08);
+  --shadow-dialog: 0 16px 40px -8px rgba(15, 23, 42, 0.22),
+                   0 4px 10px -4px rgba(15, 23, 42, 0.10);
+}
+
+/* ── light — paper surface, ink text, green-500 signal (web-kit :root) ─────── */
+html[data-theme="portfolio"][data-mode="light"] {
+  --bg: #FFFFFF;                 /* --paper */
+  --surface: #FFFFFF;            /* --surface */
+  --surface-2: #ECECEE;          /* --surface-sunken / --gray-100 */
+  --border: #E0E0E3;             /* --gray-200 soft hairline */
+  --text: #0B0B0C;              /* --ink */
+  --text-dim: #717177;           /* --gray-500 */
+  --text-mute: #A1A1A6;          /* --gray-400 */
+  --accent: #0B0B0C;             /* accent = ink (primary actions) */
+  --accent-soft: #ECECEE;        /* --accent-tint (--gray-100) */
+  --on-accent: #FFFFFF;          /* --text-on-accent = paper */
+  --ok: #1E9E5A;                 /* --green-500 (success in light) */
+  --warn: #B7791F;               /* --amber-500 */
+  --info: #0891b2;               /* cyan-600 — restrained info */
+  --danger: #D63B3B;             /* --red-500 */
+  --hover: color-mix(in srgb, #0B0B0C 4%, transparent);
+  --glass: color-mix(in srgb, #FFFFFF 80%, transparent);
+  --glass-blur: 0px;             /* Console is FLAT — no glass blur */
+  --shadow: none;                /* base surfaces carry NO drop shadow */
+  --ring: inset 0 0 0 1px var(--border);
+  --font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  color-scheme: light;
+
+  /* the Console vocabulary */
+  --signal: #1E9E5A;             /* --green-500 */
+  --signal-hover: #16864B;       /* --green-600 */
+  --signal-tint: color-mix(in srgb, #1E9E5A 12%, var(--surface));
+  --rule: #0B0B0C;               /* HARD ink structural line */
+  --rule-shadow: 4px 4px 0 0 var(--rule);  /* the Console card offset block shadow */
+  --focus-ring: #1E9E5A;         /* --focus = green */
+  --chart-1: var(--signal);      /* brand green — default single series */
+  --chart-2: #0891b2;            /* cyan-600 */
+  --chart-3: #7c3aed;            /* violet-600 */
+  --chart-4: #B7791F;            /* amber */
+  --chart-5: #dc2626;            /* red-600 */
+  --chart-6: #db2777;            /* pink-600 */
+  --chart-7: #475569;            /* slate-600 */
+  --chart-8: #0e7490;            /* teal-700 */
+  --status-backlog: #717177;     /* --gray-500 */
+  --status-progress: #1E9E5A;    /* --signal */
+  --status-review: #B7791F;      /* --amber-500 */
+  --status-done: #1E9E5A;        /* --green-500 */
+  --shadow-popover: 0 4px 12px -2px rgba(15, 23, 42, 0.12),
+                    0 2px 4px -2px rgba(15, 23, 42, 0.08);
+  --shadow-dialog: 0 16px 40px -8px rgba(15, 23, 42, 0.22),
+                   0 4px 10px -4px rgba(15, 23, 42, 0.10);
+}

@@ -9,8 +9,8 @@
    prefix is `amu-pref-`. The `theme` pref routes through theme.ts so there is
    one owner of `html[data-theme]`. */
 
-import { applyTheme } from "../theme/theme.ts";
-import type { ThemeName } from "../theme/theme.ts";
+import { setMode } from "../theme/theme.ts";
+import type { Mode } from "../theme/theme.ts";
 
 /** control kinds the rendered settings/policy surfaces understand. */
 export type PrefControl = "select" | "toggle" | "text" | "multi";
@@ -127,12 +127,13 @@ export function setPolicy(
   return persist(scopeType, scopeId || "_", key, value);
 }
 
-/** The document-level prefs reflect onto <html>. `theme` routes through
-    theme.ts (one owner of `html[data-theme]`). */
+/** The document-level prefs reflect onto <html>. The `theme` pref carries the
+    light/dark axis, so it routes to setMode (theme.ts owns `html[data-mode]`);
+    the theme NAME axis is selected via setTheme, not a document pref. */
 export function applyDocumentPref(key: string, value: unknown): void {
   const root = document.documentElement;
   if (key === "theme") {
-    if (value === "dark" || value === "light") applyTheme(value as ThemeName);
+    if (value === "dark" || value === "light") setMode(value as Mode);
     return;
   }
   if (key === "density") {

@@ -2,5 +2,5 @@
    in src/theme/theme.ts; this re-exports the union + the function signatures so a
    consumer can type against the contract barrel without reaching into src/theme. */
 
-export type { ThemeName } from "../theme/theme.ts";
-export { applyTheme, getTheme, onThemeChange } from "../theme/theme.ts";
+export type { ThemeName, Mode } from "../theme/theme.ts";
+export { listThemes, getTheme, getMode, setTheme, setMode, toggleMode, onThemeChange } from "../theme/theme.ts";

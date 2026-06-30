@@ -32,8 +32,10 @@ export function getEcharts(): EChartsGlobal | undefined {
 
 const THEME_NAMES = ["theme-mocha", "theme-latte", "theme-dark", "theme-light"];
 
-// html[data-theme] → chart theme name. Aliases kept so a stored legacy value
-// still themes correctly.
+// mode (html[data-mode]) → chart theme name. The two-axis platform splits the
+// app identity into a theme NAME (html[data-theme]) × a mode (html[data-mode]);
+// the chart palette tracks the MODE. Legacy single-axis data-theme="dark|light"
+// values still resolve here (back-compat), as do the older mocha/latte aliases.
 const CHART_THEME: Record<string, string> = {
   dark: "theme-dark",
   light: "theme-light",
@@ -83,11 +85,17 @@ export function ensureRegisteredThemes(): Promise<unknown> {
   return registerP;
 }
 
-/** The chart-theme NAME for the current app theme (html[data-theme]); OS match as
-    the fallback, defaulting to the dark identity. */
+/** The chart-theme NAME for the current app MODE. The two-axis platform keys the
+    mode on html[data-mode] (dark|light); we read that first, then fall back to a
+    legacy single-axis html[data-theme]="dark|light" (back-compat), then OS match,
+    defaulting to the dark identity. The chart palette tracks the mode so charts
+    carry the app identity across a theme switch (the canvas reaction, AC-16). */
 export function chartTheme(): string {
-  const t = typeof document !== "undefined" ? document.documentElement?.dataset?.theme : undefined;
-  if (t && CHART_THEME[t]) return CHART_THEME[t];
+  const ds = typeof document !== "undefined" ? document.documentElement?.dataset : undefined;
+  const mode = ds?.mode;
+  if (mode && CHART_THEME[mode]) return CHART_THEME[mode];
+  const legacy = ds?.theme;
+  if (legacy && CHART_THEME[legacy]) return CHART_THEME[legacy];
   const light =
     typeof window !== "undefined" &&
     window.matchMedia?.("(prefers-color-scheme: light)").matches;

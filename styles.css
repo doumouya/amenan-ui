@@ -3,8 +3,17 @@
    then the shell, then component sheets (added by later waves). The build
    (tools/build.mjs) flattens this tree into dist/tokens.css byte-faithfully. */
 
-/* ── tokens (must precede every component sheet) ── */
-@import "src/theme/tokens.css";
+/* ── theme platform (must precede every component sheet) ──
+   base.css = STRUCTURE (shared scales); then each theme's PALETTE under the
+   two-axis html[data-theme="<name>"][data-mode] selector. _template.css is the
+   add-a-theme starting point — imported but INERT (its vars sit under the unused
+   html[data-theme="_template"] selector, so it leaks nothing for shipped themes).
+   This is the platform manifest (Option B): no nested tokens.css sub-manifest. */
+@import "src/theme/base.css";
+@import "src/theme/themes/redpash.css";
+@import "src/theme/themes/portfolio.css";
+@import "src/theme/themes/numu.css";
+@import "src/theme/themes/_template.css";
 
 /* ── shell ── */
 @import "src/page-assembly.css";

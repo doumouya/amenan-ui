@@ -1,0 +1,115 @@
+/* themes/redpash.css — the redpash theme (AC-6). Byte-preserves today's amenan
+   palette (the red/glass/sans look) for both modes AND maps the NEW Console
+   contract tokens (AC-13) to sensible RedPash equivalents so the existing look is
+   unchanged. Two-axis selector: html[data-theme="redpash"][data-mode="dark"|"light"].
+
+   `:root` resolves to redpash + dark when no attribute is set (AC-4), so an
+   attribute-less document renders the old default. The dark block is keyed off
+   BOTH `:root` and the explicit two-axis selector; the explicit two-axis block
+   is required by AC-4/AC-7 so the contract test finds it.
+
+   NEW-token map (AC-6, RedPash stays soft — no hard rule, no offset block):
+     --signal      → --ok           (#2dd4a7 dark / #0e9f6e light)
+     --signal-hover→ a darker step of --ok
+     --signal-tint → color-mix(--ok 14%, transparent)
+     --rule        → var(--border)  (redpash keeps the soft hairline)
+     --rule-shadow → var(--shadow)  (no offset block)
+     --focus-ring  → var(--accent)
+     --shadow-popover/-dialog → aliases of today's --shadow
+     --font        → today's sans stack
+     --chart-1..8 / --status-* → RedPash-tinted values */
+
+/* ── dark (default; :root resolves here when no attribute is set) ─────────── */
+:root,
+html[data-theme="redpash"][data-mode="dark"] {
+  --bg: #0c0d10;
+  --surface: #15171b;
+  --surface-2: #1c1f25;
+  --border: #2a2e37;
+  --text: #e6e8ec;
+  --text-dim: #a0a6b0;
+  --text-mute: #6b7280;
+  --accent: #f04438;
+  --accent-soft: rgba(240, 68, 56, 0.14);
+  --on-accent: #ffffff;
+  --ok: #2dd4a7;
+  --warn: #f5b14c;
+  --info: #5b8def;
+  --danger: #ff5c5c;
+  --hover: rgba(255, 255, 255, 0.05);
+  --glass: rgba(255, 255, 255, 0.045);
+  --glass-blur: 14px;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --ring: 0 0 0 1px var(--border);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+
+  /* NEW Console contract tokens — mapped to RedPash equivalents (soft look). */
+  --signal: var(--ok);
+  --signal-hover: #20b78f;
+  --signal-tint: color-mix(in srgb, var(--ok) 14%, transparent);
+  --rule: var(--border);
+  --rule-shadow: var(--shadow);
+  --focus-ring: var(--accent);
+  --chart-1: #f04438;
+  --chart-2: #5b8def;
+  --chart-3: #2dd4a7;
+  --chart-4: #f5b14c;
+  --chart-5: #b692f6;
+  --chart-6: #f670c7;
+  --chart-7: #7e8794;
+  --chart-8: #36bffa;
+  --status-backlog: #6b7280;
+  --status-progress: #5b8def;
+  --status-review: #f5b14c;
+  --status-done: #2dd4a7;
+  --shadow-popover: var(--shadow);
+  --shadow-dialog: var(--shadow);
+}
+
+/* ── light ────────────────────────────────────────────────────────────────── */
+html[data-theme="redpash"][data-mode="light"] {
+  --bg: #fafafb;
+  --surface: #ffffff;
+  --surface-2: #f4f5f7;
+  --border: #e4e7ec;
+  --text: #1a1d23;
+  --text-dim: #5a6170;
+  --text-mute: #9aa1ad;
+  --accent: #f04438;
+  --accent-soft: rgba(240, 68, 56, 0.1);
+  --on-accent: #ffffff;
+  --ok: #0e9f6e;
+  --warn: #c27803;
+  --info: #3f66d4;
+  --danger: #e02424;
+  --hover: rgba(16, 24, 40, 0.04);
+  --glass: rgba(255, 255, 255, 0.65);
+  --glass-blur: 14px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --ring: 0 0 0 1px var(--border);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+
+  /* NEW Console contract tokens — mapped to RedPash equivalents (soft look). */
+  --signal: var(--ok);
+  --signal-hover: #0b7e58;
+  --signal-tint: color-mix(in srgb, var(--ok) 14%, transparent);
+  --rule: var(--border);
+  --rule-shadow: var(--shadow);
+  --focus-ring: var(--accent);
+  --chart-1: #f04438;
+  --chart-2: #3f66d4;
+  --chart-3: #0e9f6e;
+  --chart-4: #c27803;
+  --chart-5: #7c3aed;
+  --chart-6: #db2777;
+  --chart-7: #475569;
+  --chart-8: #0e7490;
+  --status-backlog: #9aa1ad;
+  --status-progress: #3f66d4;
+  --status-review: #c27803;
+  --status-done: #0e9f6e;
+  --shadow-popover: var(--shadow);
+  --shadow-dialog: var(--shadow);
+}

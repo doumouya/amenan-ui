@@ -23,6 +23,6 @@ export type {
 // Route map + guards.
 export type { RouteDef, RouteMap, RouteCtx, Guard, Router } from "./route.ts";
 
-// Theme seam (types + functions).
-export type { ThemeName } from "./theme.ts";
-export { applyTheme, getTheme, onThemeChange } from "./theme.ts";
+// Theme seam (types + functions) — the open-ended two-axis API.
+export type { ThemeName, Mode } from "./theme.ts";
+export { listThemes, getTheme, getMode, setTheme, setMode, toggleMode, onThemeChange } from "./theme.ts";

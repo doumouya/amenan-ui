@@ -1,0 +1,77 @@
+/* themes/_template.css — the add-a-theme STARTING POINT (AC-2/AC-3). It lists
+   EVERY contract token (the AC-13 superset), grouped by family, as blank slots
+   for a new theme author to fill. The add-a-theme recipe (THEME.md / AC-22):
+
+     1. cp src/theme/themes/_template.css src/theme/themes/<client>.css
+     2. fill every token below for [data-theme="<client>"][data-mode="dark"]
+        AND …[data-mode="light"]
+     3. add the new theme's import line to styles.css (after the other themes)
+     4. add "<client>" to listThemes() in src/theme/theme.ts; setTheme("<client>")
+     5. npm run ci (the theme-contract test verifies every token is filled)
+
+   This file is IMPORTED by styles.css but defines its vars under the INERT
+   selector html[data-theme="_template"] — a value no shipped theme uses — so
+   importing it changes NOTHING for redpash/portfolio/numu (AC-3). The blank
+   values are intentional: the contract test asserts the NAMES are present here
+   (the recipe stays complete), NOT that they carry a value. */
+
+html[data-theme="_template"][data-mode="dark"],
+html[data-theme="_template"][data-mode="light"] {
+  /* ── palette: surfaces & text ─────────────────────────────────────────── */
+  --bg: ;            /* TODO: page background */
+  --surface: ;       /* TODO: card / panel surface */
+  --surface-2: ;     /* TODO: raised / sunken surface */
+  --border: ;        /* TODO: soft hairline (dividers, table rows) */
+  --text: ;          /* TODO: primary text */
+  --text-dim: ;      /* TODO: secondary / dim text */
+  --text-mute: ;     /* TODO: muted / placeholder text */
+
+  /* ── palette: accent & on-accent ──────────────────────────────────────── */
+  --accent: ;        /* TODO: primary action color */
+  --accent-soft: ;   /* TODO: accent tint / soft fill */
+  --on-accent: ;     /* TODO: text/icon on an accent surface */
+
+  /* ── palette: semantic status ─────────────────────────────────────────── */
+  --ok: ;            /* TODO: success hue */
+  --warn: ;          /* TODO: warning hue */
+  --info: ;          /* TODO: info hue */
+  --danger: ;        /* TODO: danger hue */
+
+  /* ── palette: surfaces (interaction) & elevation ──────────────────────── */
+  --hover: ;         /* TODO: hover wash */
+  --glass: ;         /* TODO: glass/overlay wash */
+  --glass-blur: ;    /* TODO: glass blur radius (0px if flat) */
+  --shadow: ;        /* TODO: base shadow (none if flat) */
+  --ring: ;          /* TODO: focus ring frame */
+  --font: ;          /* TODO: display/body font family */
+
+  /* ── Console vocabulary: signal ───────────────────────────────────────── */
+  --signal: ;        /* TODO: the one brand signal (active/success/links) */
+  --signal-hover: ;  /* TODO: signal hover step */
+  --signal-tint: ;   /* TODO: signal soft fill */
+
+  /* ── Console vocabulary: structural rule + focus ──────────────────────── */
+  --rule: ;          /* TODO: hard structural line color */
+  --rule-shadow: ;   /* TODO: card block / offset shadow */
+  --focus-ring: ;    /* TODO: focus ring color */
+
+  /* ── Console vocabulary: chart series ─────────────────────────────────── */
+  --chart-1: ;       /* TODO: chart series 1 (usually = signal) */
+  --chart-2: ;       /* TODO: chart series 2 */
+  --chart-3: ;       /* TODO: chart series 3 */
+  --chart-4: ;       /* TODO: chart series 4 */
+  --chart-5: ;       /* TODO: chart series 5 */
+  --chart-6: ;       /* TODO: chart series 6 */
+  --chart-7: ;       /* TODO: chart series 7 */
+  --chart-8: ;       /* TODO: chart series 8 */
+
+  /* ── Console vocabulary: workflow status ──────────────────────────────── */
+  --status-backlog: ;  /* TODO: backlog state */
+  --status-progress: ; /* TODO: in-progress state */
+  --status-review: ;   /* TODO: review state */
+  --status-done: ;     /* TODO: done state */
+
+  /* ── Console vocabulary: flat elevation tiers ─────────────────────────── */
+  --shadow-popover: ;  /* TODO: floating-layer elevation (menus/dropdowns/toasts) */
+  --shadow-dialog: ;   /* TODO: dialog elevation (modals) */
+}

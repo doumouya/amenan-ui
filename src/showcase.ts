@@ -19,9 +19,10 @@
 import {
   // kernel + foundation
   el,
-  applyTheme,
   getTheme,
-  type ThemeName,
+  getMode,
+  setMode,
+  toggleMode,
   register,
   listComponents,
   toMount,
@@ -131,14 +132,13 @@ function mountHeader(): void {
   const header = el("header", { class: "amu-showcase-header" });
   header.append(el("h1", { class: "amu-showcase-h1" }, "amenan-ui — component showcase"));
 
-  const label = el("span", { class: "amu-showcase-theme-label" }, `theme: ${getTheme()}`);
+  const label = el("span", { class: "amu-showcase-theme-label" }, `${getTheme()} · ${getMode()}`);
   const toggleBtn = button({
-    label: "Toggle theme",
+    label: "Toggle mode",
     icon: "bi-circle-half",
     onClick: () => {
-      const next: ThemeName = getTheme() === "dark" ? "light" : "dark";
-      applyTheme(next);
-      label.textContent = `theme: ${next}`;
+      toggleMode();
+      label.textContent = `${getTheme()} · ${getMode()}`;
     },
   });
   const controls = el("div", { class: "amu-showcase-controls" }, toggleBtn, label);
@@ -637,7 +637,7 @@ function showcaseData(): void {
         ],
       }),
     onNavigate: (tab) => toast({ message: `nav ${tab.id}` }),
-    onTheme: () => applyTheme(getTheme() === "dark" ? "light" : "dark"),
+    onTheme: () => setMode(getMode() === "dark" ? "light" : "dark"),
     profileInitials: "EM",
     themeLabel: "Theme",
   });
