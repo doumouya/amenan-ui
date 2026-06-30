@@ -1,0 +1,64 @@
+/* topbar — sidebar toggle · centred search slot · nav icons + app launcher.
+   Shares the rail's --bg with NO border between them, so topbar + rail read as
+   one continuous chrome frame and the surface floats inside it (the universals —
+   theme/settings/sign-out/profile — live in the rail footer now, not here).
+   Sole owner of .amu-topbar*. */
+
+.amu-topbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--gap);
+  height: var(--topbar-h);
+  padding: 0 var(--sp-4);
+  background: var(--bg);
+  z-index: 50;
+}
+
+.amu-topbar-lead {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* centre cell holds the injected search slot (which sets its own width). */
+.amu-topbar-center {
+  justify-self: center;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* per-page nav, rendered as icon links (icons over text). */
+.amu-topbar-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ctl-h);
+  height: var(--ctl-h);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+}
+.amu-topbar-nav-icon:hover {
+  color: var(--text);
+  background: var(--hover);
+  text-decoration: none;
+}
+.amu-topbar-nav-icon.is-active {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+.amu-topbar-nav-icon .bi { font-size: var(--text-md); }
+
+.amu-topbar-actions {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+/* portrait safety net — drop the per-page nav icons; the launcher + the sidebar
+   toggle + search slot are enough to navigate. */
+@media (max-width: 48rem) { /* --bp-sm */
+  .amu-topbar-nav-icon { display: none; }
+}

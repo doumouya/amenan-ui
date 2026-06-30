@@ -40,3 +40,9 @@
 @import "src/components/sql-editor/sql-editor.css";
 @import "src/components/steps-panel/steps-panel.css";
 @import "src/components/workspace-panels/workspace-panels.css";
+/* W4b composed/layout tier — the data table + its thin grid composer + chrome.
+   redtable precedes grid-view (the composer reads the table's fill). */
+@import "src/components/redtable/redtable.css";
+@import "src/components/grid-view/grid-view.css";
+@import "src/components/topbar/topbar.css";
+@import "src/components/rail/rail.css";

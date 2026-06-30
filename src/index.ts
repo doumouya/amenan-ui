@@ -104,3 +104,17 @@ export * from "./components/joins-wizard/joins-wizard.ts";
 export * from "./components/sql-editor/sql-editor.ts";
 export * from "./components/steps-panel/steps-panel.ts";
 export * from "./components/workspace-panels/workspace-panels.ts";
+
+// Components — W4b composed/layout tier (the 4 heaviest: the data table + its
+// thin grid composer + the chrome frame).
+// redtable: THE data table (virtual/pager modes) + virtual-rows windowing +
+// the DEFAULT editor registry (editorFor injected as config, never hardwired).
+export * from "./components/redtable/redtable.ts";
+export * from "./components/redtable/virtual-rows.ts";
+export * from "./components/redtable/editor-registry.ts";
+// grid-view: thin composer (grid-toolbar + sheet slot + redtable).
+export * from "./components/grid-view/grid-view.ts";
+// topbar + rail: the chrome frame (decoupled from apps.js / fetch — injected nav
+// config + onToggleRail callback; rail is UI-only, zero fetch).
+export * from "./components/topbar/topbar.ts";
+export * from "./components/rail/rail.ts";

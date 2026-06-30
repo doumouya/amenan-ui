@@ -1,0 +1,27 @@
+/* grid-view — a thin composer: [toolbar?] [sheet?] [redtable] in a flex column.
+   It owns only the column layout; the children style themselves. The column is
+   itself a sized flex parent so the redtable's fill kicks in. Sole owner of
+   .amu-gridview (ui-fork-audit R4). */
+
+.amu-gridview {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  gap: var(--sp-2);
+}
+
+/* toolbar + sheet are fixed-height bands; only the table grows. */
+.amu-gridview-toolbar { flex-shrink: 0; }
+
+.amu-gridview-sheet { flex-shrink: 0; }
+.amu-gridview-sheet.is-empty { display: none; }
+
+/* the table slot fills the remaining height; the redtable's own min-height:0 +
+   .amu-redtable-scroll flex:1 then makes the body scroll within it. */
+.amu-gridview-table {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
