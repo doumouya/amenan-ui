@@ -1,0 +1,119 @@
+/* column-manager — per-column cleaning surface. Sole owner of .amu-colmgr*.
+   Compact for a ~280px side panel. knob: --colmgr-cols-max-h */
+
+.amu-colmgr {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  font-size: var(--text-sm);
+}
+
+.amu-colmgr-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.amu-colmgr-title {
+  color: var(--text-mute);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.amu-colmgr-count {
+  margin-inline-start: auto;
+  color: var(--accent);
+  font-size: var(--text-xs);
+}
+
+/* the column checklist — scrolls within the panel rather than pushing the ops
+   off-screen on a wide file. */
+.amu-colmgr-cols {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  max-height: var(--colmgr-cols-max-h, 13rem);
+  overflow: auto;
+  padding: var(--sp-2);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--ring);
+}
+
+.amu-colmgr-col {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  cursor: pointer;
+}
+
+.amu-colmgr-col-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.amu-colmgr-empty {
+  margin: 0;
+  color: var(--text-mute);
+  font-size: var(--text-xs);
+  font-style: italic;
+}
+
+.amu-colmgr-ops {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.amu-colmgr-group-label {
+  color: var(--text-mute);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* stack ops full-width — the labels ("Find & replace in selected…") are long and
+   a 280px panel has no room for a button grid. */
+.amu-colmgr-op-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.amu-colmgr-op {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+/* the inline action-sheet for an op's params */
+.amu-colmgr-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.amu-colmgr-sheet:empty {
+  display: none;
+}
+
+.amu-colmgr-sheet:not(:empty) {
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.amu-colmgr-sheet-title {
+  font-weight: 600;
+}
+
+.amu-colmgr-control {
+  display: block;
+}
+
+.amu-colmgr-sheet-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}

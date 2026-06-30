@@ -32,3 +32,11 @@
 @import "src/components/grid-toolbar/grid-toolbar.css";
 @import "src/components/report-builder/report-builder.css";
 @import "src/components/settings-form/settings-form.css";
+/* W4a composed/layout tier. */
+@import "src/components/chart/chart.css";
+@import "src/components/filter-panel/filter-panel.css";
+@import "src/components/column-manager/column-manager.css";
+@import "src/components/joins-wizard/joins-wizard.css";
+@import "src/components/sql-editor/sql-editor.css";
+@import "src/components/steps-panel/steps-panel.css";
+@import "src/components/workspace-panels/workspace-panels.css";

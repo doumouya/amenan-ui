@@ -1,0 +1,76 @@
+/* workspace-panels — the responsive 3-region frame (left · center · right). It owns
+   the responsive @media + the off-canvas side-drawer behavior. Above --bp-lg the
+   regions are a grid; below, the center is the lone column and the sides drawer in
+   over a scrim. Sole owner of every .amu-wsp* class (ui-fork-audit R4).
+   knobs: --wsp-left-w --wsp-right-w */
+
+.amu-wsp {
+  display: grid;
+  grid-template-columns:
+    var(--wsp-left-w, 18rem) minmax(0, 1fr) var(--wsp-right-w, 18rem);
+  min-height: 0;
+  height: 100%;
+}
+
+.amu-wsp-region {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.amu-wsp-left {
+  border-right: 1px solid var(--border);
+}
+.amu-wsp-right {
+  border-left: 1px solid var(--border);
+}
+.amu-wsp-center {
+  min-width: 0;
+}
+
+/* the shared drawer scrim — only ever shown inside the media, when a drawer is
+   open. */
+.amu-wsp-scrim {
+  position: fixed;
+  inset: var(--topbar-h) 0 0 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 60;
+  display: none;
+}
+
+/* ── below --bp-lg (80rem): single column + off-canvas side drawers ────────── */
+@media (max-width: 80rem) { /* --bp-lg */
+  .amu-wsp {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* the sides leave the grid flow and become fixed drawers. */
+  .amu-wsp-left,
+  .amu-wsp-right {
+    position: fixed;
+    top: var(--topbar-h);
+    bottom: 0;
+    width: min(20rem, 85vw);
+    z-index: 61; /* above the scrim (60) */
+    background: var(--bg);
+    transition: transform var(--slow) var(--ease);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  .amu-wsp-left {
+    left: 0;
+    border-right: 1px solid var(--border);
+    transform: translateX(-100%);
+  }
+  .amu-wsp-right {
+    right: 0;
+    border-left: 1px solid var(--border);
+    transform: translateX(100%);
+  }
+  .amu-wsp-left.is-open,
+  .amu-wsp-right.is-open {
+    transform: translateX(0);
+  }
+  .amu-wsp-scrim.is-open {
+    display: block;
+  }
+}

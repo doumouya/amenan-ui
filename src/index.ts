@@ -88,3 +88,19 @@ export * from "./components/dashboard-grid/dashboard-grid.ts";
 export * from "./components/grid-toolbar/grid-toolbar.ts";
 export * from "./components/report-builder/report-builder.ts";
 export * from "./components/settings-form/settings-form.ts";
+
+// Components — W4a composed/layout tier (token reads, no service).
+// chart: the tile + its build/render/theme helpers (ECharts via window.echarts,
+// graceful no-op when absent).
+export * from "./components/chart/chart.ts";
+export * from "./components/chart/build.ts";
+export * from "./components/chart/render.ts";
+export * from "./components/chart/theme.ts";
+// filter-panel: the builder + the pure filter-node algebra.
+export * from "./components/filter-panel/filter-panel.ts";
+export * from "./components/filter-panel/filter-node.ts";
+export * from "./components/column-manager/column-manager.ts";
+export * from "./components/joins-wizard/joins-wizard.ts";
+export * from "./components/sql-editor/sql-editor.ts";
+export * from "./components/steps-panel/steps-panel.ts";
+export * from "./components/workspace-panels/workspace-panels.ts";

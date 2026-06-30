@@ -19,12 +19,6 @@
   "include": ["src", "tests"],
   "exclude": [
     "node_modules",
-    "dist",
-    // filter-node.test imports src/components/filter-panel/filter-node.ts — a W4
-    // component not yet built. Excluding ONLY this test keeps the W0–W2 tsc gate
-    // green without touching the tester-owned test. Remove this line in W4 when
-    // filter-node.ts lands (the contract/registry/router/page-assembly tests stay
-    // in scope, so AC-J7 still runs).
-    "tests/filter-node.test.ts"
+    "dist"
   ]
 }

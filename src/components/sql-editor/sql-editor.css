@@ -1,0 +1,74 @@
+/* sql-editor — a SQL console surface. Sole owner of .amu-sqleditor*.
+   knob: --sqleditor-input-min-h (the textarea's minimum height). */
+
+.amu-sqleditor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  font-size: var(--text-sm);
+  --sqleditor-input-min-h: 8rem;
+}
+
+.amu-sqleditor-hint {
+  color: var(--text-mute);
+  font-size: var(--text-xs);
+}
+
+.amu-sqleditor-t {
+  font-family: var(--font-mono);
+  color: var(--accent);
+}
+
+.amu-sqleditor-input {
+  width: 100%;
+  min-height: var(--sqleditor-input-min-h);
+  resize: vertical;
+  padding: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--ring);
+}
+
+.amu-sqleditor-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.amu-sqleditor-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.amu-sqleditor-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+
+.amu-sqleditor-name {
+  width: 10rem;
+}
+
+/* status line — tone is data-driven (muted while running, ok / danger on settle) */
+.amu-sqleditor-status {
+  min-width: 0;
+  font-size: var(--text-xs);
+  color: var(--text-mute);
+}
+
+.amu-sqleditor-status[data-tone="ok"] {
+  color: var(--ok);
+}
+
+.amu-sqleditor-status[data-tone="danger"] {
+  color: var(--danger);
+}

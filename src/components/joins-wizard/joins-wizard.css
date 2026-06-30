@@ -1,0 +1,183 @@
+/* joins-wizard — the multi-file join flow (rendered inside a modal body). Sole
+   owner of .amu-jw*. */
+
+.amu-jw {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 22rem;
+}
+
+.amu-jw-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.amu-jw-loading {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-6) 0;
+  justify-content: center;
+  color: var(--text-dim);
+}
+
+.amu-jw-error {
+  padding: var(--sp-4);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.amu-jw-heading {
+  margin: 0 0 var(--sp-2);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* file picker */
+.amu-jw-files,
+.amu-jw-pairs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.amu-jw-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--ring);
+  color: var(--text);
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.amu-jw-file:hover {
+  background: var(--hover);
+}
+
+.amu-jw-file.is-active {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.amu-jw-file-name {
+  font-weight: 500;
+}
+
+.amu-jw-file-meta {
+  color: var(--text-mute);
+  font-size: var(--text-xs);
+}
+
+/* key-pair picker (radio-like) */
+.amu-jw-pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--ring);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.amu-jw-pair:hover {
+  background: var(--hover);
+}
+
+.amu-jw-pair.is-active {
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.amu-jw-pair-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.amu-jw-pair-keys {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.amu-jw-key {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: 0.0625rem 0.375rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.amu-jw-arrow {
+  color: var(--text-mute);
+}
+
+.amu-jw-matches {
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+
+.amu-jw-samples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+.amu-jw-nokeys {
+  margin: 0;
+  color: var(--text-mute);
+  font-size: var(--text-sm);
+}
+
+/* options */
+.amu-jw-opts {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) 1fr;
+  gap: var(--sp-3);
+}
+
+.amu-jw-opt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.amu-jw-opt-label {
+  font-size: var(--text-xs);
+  color: var(--text-mute);
+}
+
+/* the result-name input is ours to size; the join-type select keeps its own
+   intrinsic width (.amu-select) — we never style another component's class (R4). */
+.amu-jw-name {
+  width: 100%;
+}
+
+.amu-jw-type {
+  display: block;
+}
+
+.amu-jw-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}
