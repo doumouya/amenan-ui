@@ -129,3 +129,17 @@ export * from "./components/omni/omni.ts";
 export * from "./components/message-thread/message-thread.ts";
 // chart-editor: chart-options form + live preview (injected columns/preview sources).
 export * from "./components/chart-editor/chart-editor.ts";
+
+// Components — W5b DATA-coupled tier (controller + generic CRUD body).
+// rail-data: the CONTROLLER — wraps mountRail (W4b) + an injected loader/source
+// + onAction/onRename/onNavigate/onTheme/onSignOut callbacks (no fetch, no /api,
+// no location.hash hardwire). Reuses rail.css — declares NO new .amu-rail* class.
+export * from "./components/rail/rail-data.ts";
+// object-list: the generic object-table body — data via injected source, mutations
+// via onAction, columns from the type-registry over the Service seam.
+export * from "./components/object-list/object-list.ts";
+
+// Engine — W5b optional, injected-wasm-path data engine (NO css). Lazy + graceful:
+// with no wasm path + no service these degrade cleanly (no throw, no console error).
+export * from "./engine/wasm-engine.ts";
+export * from "./engine/window-source.ts";

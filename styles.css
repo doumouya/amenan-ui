@@ -51,3 +51,6 @@
 @import "src/components/omni/omni.css";
 @import "src/components/message-thread/message-thread.css";
 @import "src/components/chart-editor/chart-editor.css";
+/* W5b DATA-coupled tier — object-list owns the only new sheet (rail-data reuses
+   rail.css; the engine modules have no css). */
+@import "src/components/object-list/object-list.css";
