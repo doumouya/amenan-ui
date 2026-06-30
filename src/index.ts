@@ -114,13 +114,13 @@ export * from "./components/redtable/virtual-rows.ts";
 export * from "./components/redtable/editor-registry.ts";
 // grid-view: thin composer (grid-toolbar + sheet slot + redtable).
 export * from "./components/grid-view/grid-view.ts";
-// topbar + rail: the chrome frame (decoupled from apps.js / fetch — injected nav
+// topbar + rail: the chrome frame (decoupled from the app registry — injected nav
 // config + onToggleRail callback; rail is UI-only, zero fetch).
 export * from "./components/topbar/topbar.ts";
 export * from "./components/rail/rail.ts";
 
 // Components — W5a DATA / RBAC-coupled tier (decoupled via the Service seam —
-// injected source/send/onChange callbacks; no boot/api, no fetch, no /api literal).
+// injected source/send/onChange callbacks; no global fetch wrapper, no hardcoded endpoint).
 // perm-cell: the pure RBAC matrix cell (config-driven cycle order + onChange).
 export * from "./components/perm-cell/perm-cell.ts";
 // omni: global search via an injected Source<Result[]>; config-driven kinds.

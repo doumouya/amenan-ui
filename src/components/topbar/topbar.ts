@@ -3,7 +3,7 @@
    settings · sign-out · profile) live in the rail footer, so the topbar is pure
    navigation.
 
-   DECOUPLING (AC-H2): NO apps.js. The nav is INJECTED — the consumer passes the
+   DECOUPLING (AC-H2): NO hardcoded app registry. The nav is INJECTED — the consumer passes the
    list of nav items + the active id (no appsFor/pageById). `onToggleRail` (from
    page-assembly) drives the rail's collapse. The centre `search` is an OPTIONAL
    injected element/mount — topbar does NOT hardwire omni (omni is a W5 component);
