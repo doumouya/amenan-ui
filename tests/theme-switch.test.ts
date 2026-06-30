@@ -44,18 +44,6 @@ const store: Store = { map: new Map(), setLog: [] };
   },
 };
 
-// A mutable matchMedia "world" so getMode() can be tested for the
-// prefers-color-scheme fallback (the same resolution chart/theme.ts already
-// uses: applied data-mode → legacy data-theme → prefers-color-scheme → dark).
-// `prefersDark` is what `(prefers-color-scheme: dark)` answers; node has no
-// matchMedia, so install one before importing theme.ts.
-const mql = { prefersDark: false };
-(globalThis as unknown as { matchMedia: unknown }).matchMedia = (q: string): { matches: boolean } => {
-  if (q.includes("prefers-color-scheme: dark")) return { matches: mql.prefersDark };
-  if (q.includes("prefers-color-scheme: light")) return { matches: !mql.prefersDark };
-  return { matches: false };
-};
-
 // RED until the coder widens src/theme/theme.ts to the two-axis API.
 import {
   THEME_KEY,
@@ -80,8 +68,6 @@ beforeEach(() => {
   delete docEl.dataset["mode"];
   delete docEl.attributes["data-theme"];
   delete docEl.attributes["data-mode"];
-  // reset the OS-preference world (default: light, i.e. prefers-dark=false)
-  mql.prefersDark = false;
 });
 
 test("AC-10: the two-axis storage keys are the spec values", () => {
@@ -229,12 +215,14 @@ test("AC-10: prePaintSnippet is a self-contained string that sets BOTH attribute
 });
 
 // ── Browser-walk reconciliation (CMT_7f57fd6a): getMode() must report the mode
-// that prePaintSnippet ACTUALLY applied, not a hardcoded "dark" default. When
-// amu-mode is unpersisted, prePaint resolves data-mode from prefers-color-scheme;
+// that prePaintSnippet ACTUALLY applied, not a hardcoded "dark" default. The
+// resolution order is amu-mode → applied data-mode → legacy amu-theme → DEFAULT
+// dark (the spec's Em-approved default; getMode() does NOT honor
+// prefers-color-scheme). When amu-mode is unpersisted but a data-mode is applied,
 // getMode() returning a constant "dark" makes the showcase label lie and the
-// FIRST toggleMode() a no-op. These three are RED against the current impl
-// (getMode() ignores the applied data-mode + prefers-color-scheme and returns
-// the constant DEFAULT_MODE). ────────────────────────────────────────────────
+// FIRST toggleMode() a no-op. These two are RED against the current impl
+// (getMode() ignores the applied data-mode and returns the constant
+// DEFAULT_MODE). ────────────────────────────────────────────────────────────
 
 test("CMT_7f57fd6a: getMode() equals the applied data-mode when amu-mode is unpersisted", () => {
   // No persisted mode; prePaint already applied data-mode="light".
@@ -250,20 +238,6 @@ test("CMT_7f57fd6a: getMode() equals the applied data-mode when amu-mode is unpe
   // And the dark case: applied data-mode="dark" → getMode()==="dark".
   docEl.dataset["mode"] = "dark";
   assert.equal(getMode(), "dark", "getMode() reports the applied data-mode (dark)");
-});
-
-test("CMT_7f57fd6a: getMode() with no attribute + no storage honors prefers-color-scheme", () => {
-  // Nothing applied, nothing persisted — getMode() must resolve the SAME way
-  // prePaintSnippet does (prefers-color-scheme), not a constant.
-  delete docEl.dataset["mode"];
-  store.map.delete(MODE_KEY);
-  store.map.delete(THEME_KEY);
-
-  mql.prefersDark = false; // OS prefers light
-  assert.equal(getMode(), "light", "prefers-color-scheme: light → getMode() === 'light'");
-
-  mql.prefersDark = true; // OS prefers dark
-  assert.equal(getMode(), "dark", "prefers-color-scheme: dark → getMode() === 'dark'");
 });
 
 test("CMT_7f57fd6a: toggleMode() flips visibly from an unpersisted light state", () => {
