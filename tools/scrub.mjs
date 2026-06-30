@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 /* scrub.mjs (amenan-ui) — AC-J2 / AC-L2. The identity-clean gate.
-   Forbids any surviving RedPash identity across src/** and the docs files:
-     /\bredpash\b | (^|[^-])\brp- | --rp- | data-rp- | dc-theme | new-dark | new-light/i
+   Forbids any surviving RedPash COUPLING / provenance leak across src/** and
+   the docs files — NOT a deliberate theme name. The bare word `redpash` is now
+   a legit, Em-locked theme-family id (src/theme/themes/redpash.css, the literal
+   "redpash" / data-theme="redpash", and comments) and is therefore ALLOWED.
+   What stays forbidden is actual RedPash class/route/provenance coupling:
+     (^|[^-])\brp- | --rp- | \.rp- | data-rp- | \.dc- | dc-theme |
+     boot/api | apps\.js | #/login | new-dark | new-light /i
    Vendored static assets under vendor/ are OUT of scope (AC-A7). Exit code =
    total hit count (0 = clean). Robust on an empty/partial src/ (0 hits). */
 
@@ -15,8 +20,10 @@ const SRC = path.join(ROOT, "src");
 const SKIP_DIRS = new Set(["vendor", "dist", "node_modules", ".git"]);
 const DOCS = ["README.md", "THEME.md", "DISCIPLINE.md", "DEPENDENCY-MAP.md"];
 
-// The forbidden pattern (per AC-J2). Global + case-insensitive for counting.
-const PATTERN = /\bredpash\b|(^|[^-])\brp-|--rp-|data-rp-|dc-theme|new-dark|new-light/i;
+// The forbidden COUPLING pattern (per AC-J2, reconciled CAS_c1bb4d7c): the bare
+// theme-family word `redpash` is ALLOWED; only real RedPash coupling/provenance
+// leaks are forbidden. Case-insensitive for counting.
+const PATTERN = /(^|[^-])\brp-|--rp-|\.rp-|data-rp-|\.dc-|dc-theme|boot\/api|apps\.js|#\/login|new-dark|new-light/i;
 
 function walk(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
