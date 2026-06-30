@@ -64,3 +64,15 @@ export { assemblePage } from "./page-assembly.ts";
 export type { PageHandle } from "./page-assembly.ts";
 export { createRouter } from "./router.ts";
 export type { RouterConfig } from "./router.ts";
+
+// Components — W3a leaf tier (atoms first; others compose it).
+export * from "./components/atoms/atoms.ts";
+export * from "./components/card/card.ts";
+export * from "./components/empty-state/empty-state.ts";
+export * from "./components/modal/modal.ts";
+export * from "./components/menu/menu.ts";
+export * from "./components/select/select.ts";
+export * from "./components/toast/toast.ts";
+export * from "./components/stat/stat.ts";
+export * from "./components/field/field.ts";
+export * from "./components/chip-row/chip-row.ts";

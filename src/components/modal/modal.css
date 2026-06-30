@@ -1,0 +1,36 @@
+/* modal — create/confirm ONLY (the minimalism rule). Sole owner of .amu-modal*. */
+
+.amu-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  z-index: 100;
+}
+
+.amu-modal {
+  width: min(26rem, 92vw);
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--ring), 0 16px 48px rgba(0, 0, 0, 0.35);
+  padding: var(--sp-5);
+}
+
+.amu-modal-title {
+  margin: 0 0 var(--sp-4);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.amu-modal-body {
+  margin-bottom: var(--sp-5);
+}
+
+.amu-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--gap);
+}

@@ -1,0 +1,177 @@
+/* atoms — the lowest-level vocabulary: button, chip, input, textarea, badge,
+   spinner, kbd. Sole owner of these classes (ui-fork-audit R4).
+   knob: --atom-radius */
+
+/* ── amu-btn ── the text button. Variants: default · accent (ONE per view —
+   the primary action) · ghost (low-emphasis). */
+.amu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--gap) * 0.75);
+  height: var(--ctl-h);
+  padding: 0 var(--pad-x);
+  border: 1px solid var(--border);
+  border-radius: var(--atom-radius, var(--radius));
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease);
+  user-select: none;
+  white-space: nowrap;
+}
+.amu-btn:hover {
+  background: var(--hover);
+}
+.amu-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.amu-btn--accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+.amu-btn--accent:hover {
+  background: var(--accent);
+  filter: brightness(1.08);
+}
+.amu-btn--ghost {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-dim);
+}
+.amu-btn--ghost:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.amu-btn--danger {
+  color: var(--danger);
+}
+.amu-btn--sm {
+  height: 1.625rem;
+  padding: 0 var(--sp-2);
+  font-size: var(--text-xs);
+}
+/* icon-only: square, no horizontal padding; the bi glyph centers via the
+   flex alignment already on .amu-btn. */
+.amu-btn--icon {
+  width: var(--ctl-h);
+  padding: 0;
+  font-size: var(--text-md);
+}
+
+/* ── amu-chip ── pill selector (single-select rows live in chip-row). */
+.amu-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.625rem;
+  padding: 0 var(--sp-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease);
+  white-space: nowrap;
+}
+.amu-chip:hover {
+  color: var(--text);
+}
+.amu-chip.is-active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--ring), var(--shadow);
+}
+
+/* ── amu-input ── single-line text input. */
+.amu-input {
+  height: var(--ctl-h);
+  padding: 0 var(--pad-x);
+  border: 1px solid var(--border);
+  border-radius: var(--atom-radius, var(--radius));
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--text-sm);
+  width: 100%;
+}
+.amu-input::placeholder {
+  color: var(--text-mute);
+}
+.amu-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ── amu-textarea ── the multiline input (comment composers, descriptions). */
+.amu-textarea {
+  display: block;
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 0.5rem var(--pad-x);
+  border: 1px solid var(--border);
+  border-radius: var(--atom-radius, var(--radius));
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  resize: vertical;
+}
+.amu-textarea::placeholder {
+  color: var(--text-mute);
+}
+.amu-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ── amu-badge ── soft-tint label pill (status / role / plan). */
+.amu-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 1.25rem;
+  padding: 0 var(--sp-2);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.amu-badge--ok { background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); }
+.amu-badge--warn { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
+.amu-badge--danger { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); }
+.amu-badge--info { background: color-mix(in srgb, var(--info) 14%, transparent); color: var(--info); }
+.amu-badge--accent { background: var(--accent-soft); color: var(--accent); }
+
+/* ── amu-spinner ── async feedback (used sparingly — optimistic UI first). */
+.amu-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: amu-spin 0.7s linear infinite;
+}
+@keyframes amu-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── amu-kbd ── keyboard hint. */
+.amu-kbd {
+  display: inline-block;
+  padding: 0.0625rem 0.375rem;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}

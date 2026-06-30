@@ -10,3 +10,14 @@
 @import "src/page-assembly.css";
 
 /* ── components (added in W3–W5) ── */
+/* W3a leaf tier — atoms first (others compose it), then the rest. */
+@import "src/components/atoms/atoms.css";
+@import "src/components/card/card.css";
+@import "src/components/empty-state/empty-state.css";
+@import "src/components/modal/modal.css";
+@import "src/components/menu/menu.css";
+@import "src/components/select/select.css";
+@import "src/components/toast/toast.css";
+@import "src/components/stat/stat.css";
+@import "src/components/field/field.css";
+@import "src/components/chip-row/chip-row.css";

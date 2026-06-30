@@ -1,0 +1,33 @@
+/* card — lifted content tile (launcher tiles, glanceables). One of the two
+   sanctioned glass surfaces (topbar is the other). Sole owner of .amu-card*. */
+
+.amu-card {
+  display: block;
+  padding: var(--sp-4);
+  background: var(--glass);
+  backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius-lg);
+  box-shadow: var(--ring), var(--shadow);
+  color: var(--text);
+  text-align: left;
+  transition: background var(--fast) var(--ease);
+}
+
+a.amu-card:hover,
+button.amu-card:hover {
+  background: var(--hover);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.amu-card-title {
+  margin: 0 0 var(--sp-1);
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.amu-card-sub {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}

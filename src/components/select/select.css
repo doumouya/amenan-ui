@@ -1,0 +1,19 @@
+/* select — native select, token-skinned (less is more: no custom listbox
+   until a real need arrives). Sole owner of .amu-select. */
+
+.amu-select {
+  height: var(--ctl-h);
+  padding: 0 var(--pad-x);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  min-width: 9rem;
+}
+
+.amu-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}

@@ -1,0 +1,10 @@
+/* chip-row — single-select pill tabs. Sole owner of .amu-chip-row. */
+
+.amu-chip-row {
+  display: inline-flex;
+  gap: 0.1875rem;
+  padding: 0.1875rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+}

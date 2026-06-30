@@ -1,0 +1,37 @@
+/* stat — KPI tile + strip. Sole owner of .amu-stat*. */
+
+.amu-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--gap);
+}
+
+.amu-stat {
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--ring);
+}
+
+.amu-stat-label {
+  font-size: var(--text-xs);
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.amu-stat-value {
+  font-size: var(--text-xl);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.amu-stat-value.is-ok { color: var(--ok); }
+.amu-stat-value.is-warn { color: var(--warn); }
+.amu-stat-value.is-danger { color: var(--danger); }
+
+.amu-stat-sub {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}

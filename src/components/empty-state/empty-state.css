@@ -1,0 +1,23 @@
+/* empty-state — THE onboarding surface: one sentence + the view's single
+   primary action. No tours, no hint chips. Sole owner of .amu-empty*. */
+
+.amu-empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: var(--sp-8) var(--sp-5);
+  gap: var(--sp-2);
+}
+
+.amu-empty-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.amu-empty-line {
+  margin: 0 0 var(--sp-3);
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  max-width: 26rem;
+}
