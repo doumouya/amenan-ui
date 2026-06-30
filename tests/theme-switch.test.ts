@@ -44,6 +44,18 @@ const store: Store = { map: new Map(), setLog: [] };
   },
 };
 
+// A mutable matchMedia "world" so getMode() can be tested for the
+// prefers-color-scheme fallback (the same resolution chart/theme.ts already
+// uses: applied data-mode → legacy data-theme → prefers-color-scheme → dark).
+// `prefersDark` is what `(prefers-color-scheme: dark)` answers; node has no
+// matchMedia, so install one before importing theme.ts.
+const mql = { prefersDark: false };
+(globalThis as unknown as { matchMedia: unknown }).matchMedia = (q: string): { matches: boolean } => {
+  if (q.includes("prefers-color-scheme: dark")) return { matches: mql.prefersDark };
+  if (q.includes("prefers-color-scheme: light")) return { matches: !mql.prefersDark };
+  return { matches: false };
+};
+
 // RED until the coder widens src/theme/theme.ts to the two-axis API.
 import {
   THEME_KEY,
@@ -68,6 +80,8 @@ beforeEach(() => {
   delete docEl.dataset["mode"];
   delete docEl.attributes["data-theme"];
   delete docEl.attributes["data-mode"];
+  // reset the OS-preference world (default: light, i.e. prefers-dark=false)
+  mql.prefersDark = false;
 });
 
 test("AC-10: the two-axis storage keys are the spec values", () => {
@@ -212,4 +226,57 @@ test("AC-10: prePaintSnippet is a self-contained string that sets BOTH attribute
   assert.ok(prePaintSnippet.includes(MODE_KEY), "snippet reads the amu-mode key");
   // self-contained: an inline <head> source has no import/require.
   assert.ok(!/\bimport\b|\brequire\(/.test(prePaintSnippet), "snippet has no imports");
+});
+
+// ── Browser-walk reconciliation (CMT_7f57fd6a): getMode() must report the mode
+// that prePaintSnippet ACTUALLY applied, not a hardcoded "dark" default. When
+// amu-mode is unpersisted, prePaint resolves data-mode from prefers-color-scheme;
+// getMode() returning a constant "dark" makes the showcase label lie and the
+// FIRST toggleMode() a no-op. These three are RED against the current impl
+// (getMode() ignores the applied data-mode + prefers-color-scheme and returns
+// the constant DEFAULT_MODE). ────────────────────────────────────────────────
+
+test("CMT_7f57fd6a: getMode() equals the applied data-mode when amu-mode is unpersisted", () => {
+  // No persisted mode; prePaint already applied data-mode="light".
+  store.map.delete(MODE_KEY);
+  store.map.delete(THEME_KEY);
+  docEl.dataset["mode"] = "light";
+  assert.equal(
+    getMode(),
+    "light",
+    "getMode() must report the applied data-mode (light), not the hardcoded dark default",
+  );
+
+  // And the dark case: applied data-mode="dark" → getMode()==="dark".
+  docEl.dataset["mode"] = "dark";
+  assert.equal(getMode(), "dark", "getMode() reports the applied data-mode (dark)");
+});
+
+test("CMT_7f57fd6a: getMode() with no attribute + no storage honors prefers-color-scheme", () => {
+  // Nothing applied, nothing persisted — getMode() must resolve the SAME way
+  // prePaintSnippet does (prefers-color-scheme), not a constant.
+  delete docEl.dataset["mode"];
+  store.map.delete(MODE_KEY);
+  store.map.delete(THEME_KEY);
+
+  mql.prefersDark = false; // OS prefers light
+  assert.equal(getMode(), "light", "prefers-color-scheme: light → getMode() === 'light'");
+
+  mql.prefersDark = true; // OS prefers dark
+  assert.equal(getMode(), "dark", "prefers-color-scheme: dark → getMode() === 'dark'");
+});
+
+test("CMT_7f57fd6a: toggleMode() flips visibly from an unpersisted light state", () => {
+  // amu-mode unset; prePaint applied data-mode="light". The first toggle must
+  // flip RELATIVE to the applied mode → "dark" (today it no-ops back to "light"
+  // because getMode() reads the constant "dark" and toggles to "light").
+  store.map.delete(MODE_KEY);
+  store.map.delete(THEME_KEY);
+  docEl.dataset["mode"] = "light";
+
+  toggleMode();
+
+  assert.equal(getMode(), "dark", "toggle from applied light flips to dark (not a no-op back to light)");
+  assert.equal(docEl.dataset["mode"], "dark", "data-mode is visibly flipped to dark");
+  assert.equal(store.map.get(MODE_KEY), "dark", "amu-mode persisted as dark");
 });
