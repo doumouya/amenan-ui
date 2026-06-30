@@ -1,0 +1,61 @@
+/* score-badge — the cleanness pill + breakdown disclosure. Sole owner of
+   .amu-score*. */
+
+.amu-score {
+  display: inline-block;
+  position: relative;
+}
+
+.amu-score-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: var(--text-md);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.amu-score-pill.is-ok { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); }
+.amu-score-pill.is-warn { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
+.amu-score-pill.is-danger { background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
+
+.amu-score-unit {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.amu-score-pop {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  left: 0;
+  min-width: 14rem;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--ring), 0 8px 24px rgba(0, 0, 0, 0.3);
+  z-index: 80;
+  display: none;
+}
+.amu-score.is-open .amu-score-pop {
+  display: block;
+}
+
+.amu-score-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  padding: 0.1875rem 0;
+}
+.amu-score-row b {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}

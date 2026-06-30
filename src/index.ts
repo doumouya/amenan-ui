@@ -76,3 +76,15 @@ export * from "./components/toast/toast.ts";
 export * from "./components/stat/stat.ts";
 export * from "./components/field/field.ts";
 export * from "./components/chip-row/chip-row.ts";
+
+// Components — W3b leaf tier (compose the W3a atoms/menu/select/field above).
+export * from "./components/pager/pager.ts";
+export * from "./components/surface/surface.ts";
+export * from "./components/markdown/markdown.ts";
+export * from "./components/uploader/uploader.ts";
+export * from "./components/score-badge/score-badge.ts";
+export * from "./components/side-panel/side-panel.ts";
+export * from "./components/dashboard-grid/dashboard-grid.ts";
+export * from "./components/grid-toolbar/grid-toolbar.ts";
+export * from "./components/report-builder/report-builder.ts";
+export * from "./components/settings-form/settings-form.ts";

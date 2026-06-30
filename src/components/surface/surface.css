@@ -1,0 +1,94 @@
+/* surface — the page's content frame: head band (title · meta · actions) +
+   sections. The lighter INSET panel that floats inside the topbar+rail frame: a
+   single rounded top-left corner (where rail-right meets topbar-bottom) sells the
+   continuity. Calm: no glass here. Sole owner of .amu-surface*. */
+
+.amu-surface {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding: var(--sp-5) var(--sp-6);
+  background: var(--surface);
+  border-top-left-radius: var(--radius-lg);
+}
+
+.amu-surface-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+}
+
+.amu-surface-title {
+  margin: 0;
+  font-size: var(--text-xl);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.amu-surface-meta {
+  color: var(--text-mute);
+  font-size: var(--text-sm);
+}
+
+.amu-surface-actions {
+  margin-left: auto;
+  display: inline-flex;
+  gap: var(--gap);
+}
+
+.amu-surface-section {
+  margin-bottom: var(--sp-6);
+}
+
+.amu-surface-section-title {
+  margin: 0 0 var(--sp-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* section layout options (pages pick via the section spec, never via CSS) */
+.amu-surface-section-body--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: var(--gap);
+}
+
+.amu-surface-section-body--row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  flex-wrap: wrap;
+}
+
+/* `fill`: the section grows to the full surface height (a full-height app whose
+   table scrolls internally instead of the page). Scoped via :has so every other
+   page keeps the default block + page-scroll model. */
+.amu-surface:has(.amu-surface-section-body--fill) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.amu-surface-section:has(> .amu-surface-section-body--fill) {
+  flex: 1;
+  min-height: 0;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+.amu-surface-section-body--fill {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* at the 1024 floor, tighten the inset and let a long title + actions wrap
+   instead of overflowing. */
+@media (max-width: 64rem) { /* --bp-md */
+  .amu-surface { padding: var(--sp-4); }
+  .amu-surface-head { flex-wrap: wrap; }
+}

@@ -21,3 +21,14 @@
 @import "src/components/stat/stat.css";
 @import "src/components/field/field.css";
 @import "src/components/chip-row/chip-row.css";
+/* W3b leaf tier. */
+@import "src/components/pager/pager.css";
+@import "src/components/surface/surface.css";
+@import "src/components/markdown/markdown.css";
+@import "src/components/uploader/uploader.css";
+@import "src/components/score-badge/score-badge.css";
+@import "src/components/side-panel/side-panel.css";
+@import "src/components/dashboard-grid/dashboard-grid.css";
+@import "src/components/grid-toolbar/grid-toolbar.css";
+@import "src/components/report-builder/report-builder.css";
+@import "src/components/settings-form/settings-form.css";

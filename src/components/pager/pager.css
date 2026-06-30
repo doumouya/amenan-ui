@@ -1,0 +1,44 @@
+/* pager — rows info + page controls. Sole owner of .amu-pager*. */
+
+.amu-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}
+/* at the 1024 floor, wrap rather than overflow when space is tight. */
+@media (max-width: 64rem) { /* --bp-md */
+  .amu-pager { flex-wrap: wrap; row-gap: var(--sp-2); }
+}
+
+.amu-pager-pages {
+  display: inline-flex;
+  gap: 0.125rem;
+}
+
+.amu-pager-btn {
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.375rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.amu-pager-btn:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+.amu-pager-btn.is-active {
+  background: var(--accent-soft);
+  color: var(--text);
+  font-weight: 600;
+}
+.amu-pager-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

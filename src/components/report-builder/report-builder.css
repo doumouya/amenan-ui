@@ -1,0 +1,79 @@
+/* report-builder — the group-by + measures form. Sole owner of every .amu-rb*
+   class (ui-fork-audit R4). Relative units throughout; 1px is the hairline
+   exception. */
+
+.amu-rb {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.amu-rb-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.amu-rb-heading {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-mute);
+}
+
+/* ── group-by chips ──────────────────────────────────────────────────────── */
+.amu-rb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+}
+.amu-rb-empty {
+  font-size: var(--text-sm);
+  font-style: italic;
+  color: var(--text-mute);
+}
+.amu-rb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0.125rem var(--sp-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background var(--fast) var(--ease);
+}
+.amu-rb-chip:hover { background: var(--hover); }
+.amu-rb-chip .bi { font-size: 0.75rem; opacity: 0.7; }
+
+/* ── measures: fn × column rows ──────────────────────────────────────────── */
+.amu-rb-measures {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.amu-rb-measure {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.amu-rb-mfn { flex: 0 0 40%; min-width: 0; }
+.amu-rb-mcol { flex: 1; min-width: 0; }
+/* the composed native <select>s fill their flex slot (select.css owns .amu-select;
+   this only sizes the elements the builder lays out — no class ownership). */
+.amu-rb-measure select { width: 100%; min-width: 0; }
+.amu-rb-mremove { flex-shrink: 0; }
+
+/* ── footer ──────────────────────────────────────────────────────────────── */
+.amu-rb-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}

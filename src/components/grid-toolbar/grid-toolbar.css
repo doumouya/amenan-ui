@@ -1,0 +1,82 @@
+/* grid-toolbar — a data-driven control strip above a grid. Composes the atoms
+   (button, input) + menu; declares only its own layout chrome. Sole owner of
+   every .amu-gtb* class (ui-fork-audit R4). */
+
+.amu-gtb {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding: var(--sp-2) 0;
+}
+
+/* a control whose `when`/`visible` predicate failed — folds out of the strip. */
+.amu-gtb .is-hidden { display: none; }
+
+/* a promise-returning action (e.g. refresh → reload) spins its icon until done. */
+@keyframes amu-gtb-spin { to { transform: rotate(360deg); } }
+.amu-gtb [data-gtb].is-spinning .bi {
+  display: inline-block;
+  animation: amu-gtb-spin 0.7s linear infinite;
+}
+
+/* menus wrap their trigger in a positioned item so the dropdown anchors. */
+.amu-gtb-item { display: inline-flex; }
+
+/* search: the input atom inside a search-icon overlay (the atom styles itself,
+   the toolbar only positions it). */
+.amu-gtb-search {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 1 1 12rem;   /* grows to take ALL available space (no max cap); 12rem basis before grow */
+  min-width: 8rem;   /* floor before the flex-wrap strip drops it to its own row */
+}
+.amu-gtb-search-icon {
+  position: absolute;
+  left: var(--sp-3);
+  font-size: 0.8125rem;
+  color: var(--text-mute);
+  pointer-events: none;
+}
+/* the search input is the atom (.amu-input, owned by atoms.css); we add our own
+   .amu-gtb-input only to make room for the overlaid search icon (R4-clean). */
+.amu-gtb-input { padding-left: 1.875rem; }
+
+/* a toggle in its on state — accent-tinted (reuses the atom; only the state skin
+   is the toolbar's). */
+.amu-gtb-toggle.is-active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* an inline status chip (e.g. "3 selected") — quiet, label-driven. */
+.amu-gtb-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 1.625rem;
+  padding: 0 var(--sp-3);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: var(--text-xs);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.amu-gtb-chip:hover { color: var(--text); }
+
+/* a divider between control clusters. A hairline (sanctioned px exception). */
+.amu-gtb-sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 0.125rem var(--sp-1);
+  background: var(--border);
+}
+
+/* push everything after a flex spacer to the right edge: a search control with
+   flex grows; otherwise consumers add a {kind:"sep"} or rely on wrap. */
+.amu-gtb-search ~ .amu-gtb-item,
+.amu-gtb-search ~ [data-gtb] { flex-shrink: 0; }

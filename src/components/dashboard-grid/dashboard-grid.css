@@ -1,0 +1,112 @@
+/* dashboard-grid — the designer canvas. Sole owner of .amu-dg-*. A cols×rows CSS
+   grid at 3:2 aspect (15×10 → square cells); elements are placed by the JS via
+   grid-column/grid-row. Editable mode shows a faint cell backdrop + per-cell
+   move/resize chrome. */
+
+.amu-dg {
+  display: grid;
+  grid-template-columns: repeat(var(--dg-cols, 15), 1fr);
+  grid-template-rows: repeat(var(--dg-rows, 10), 1fr);
+  gap: var(--sp-2);
+  width: 100%;
+  aspect-ratio: 3 / 2;          /* 15 : 10 → square cells */
+  max-height: 80vh;
+}
+
+/* Editable: a faint cell-grid backdrop so placement reads clearly. */
+.amu-dg.is-editable {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: calc(100% / var(--dg-cols, 15)) calc(100% / var(--dg-rows, 10));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1px;
+}
+
+.amu-dg-cell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.amu-dg-cell-body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Edit chrome — a slim top bar (grip + remove) revealed on hover, + an SE
+   resize handle. */
+.amu-dg-cell-bar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--sp-5);
+  padding: 0 var(--sp-2);
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.amu-dg-cell:hover .amu-dg-cell-bar,
+.amu-dg-cell.is-dragging .amu-dg-cell-bar { opacity: 1; }
+
+.amu-dg-grip {
+  flex: 1;
+  height: 100%;
+  cursor: move;
+  display: flex;
+  align-items: center;
+}
+.amu-dg-grip::before {
+  content: "\22EE\22EE";        /* ⋮⋮ */
+  color: var(--text-mute);
+  font-size: 0.75rem;
+  letter-spacing: -0.15em;
+}
+
+.amu-dg-del {
+  border: 0;
+  background: transparent;
+  color: var(--text-mute);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 var(--sp-1);
+}
+.amu-dg-del:hover { color: var(--danger, #e5484d); }
+
+.amu-dg-resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: var(--sp-4);
+  height: var(--sp-4);
+  cursor: se-resize;
+  opacity: 0;
+}
+.amu-dg-cell:hover .amu-dg-resize { opacity: 1; }
+.amu-dg-resize::after {
+  content: "";
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.2rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--text-mute);
+  border-bottom: 2px solid var(--text-mute);
+}
+
+.amu-dg-cell.is-dragging,
+.amu-dg-cell.is-resizing {
+  outline: 2px solid var(--accent, #6366f1);
+  z-index: 2;
+}
