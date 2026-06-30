@@ -46,3 +46,8 @@
 @import "src/components/grid-view/grid-view.css";
 @import "src/components/topbar/topbar.css";
 @import "src/components/rail/rail.css";
+/* W5a DATA / RBAC-coupled tier (decoupled via the Service seam). */
+@import "src/components/perm-cell/perm-cell.css";
+@import "src/components/omni/omni.css";
+@import "src/components/message-thread/message-thread.css";
+@import "src/components/chart-editor/chart-editor.css";

@@ -1,0 +1,34 @@
+/* perm-cell — the cycling permission cell (admin RBAC matrices). Sole owner of
+   .amu-perm-cell (ui-fork-audit R4). State rides data-perm: none | r | rw. */
+
+.amu-perm-cell {
+  min-width: 3rem;
+  height: var(--ctl-h);
+  padding: 0 var(--pad-x);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-mute);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background var(--fast) var(--ease),
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+.amu-perm-cell:hover {
+  background: var(--hover);
+}
+
+.amu-perm-cell[data-perm="r"] {
+  color: var(--info);
+  border-color: color-mix(in srgb, var(--info) 35%, var(--border));
+}
+
+.amu-perm-cell[data-perm="rw"] {
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 35%, var(--border));
+}

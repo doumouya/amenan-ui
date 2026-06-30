@@ -118,3 +118,14 @@ export * from "./components/grid-view/grid-view.ts";
 // config + onToggleRail callback; rail is UI-only, zero fetch).
 export * from "./components/topbar/topbar.ts";
 export * from "./components/rail/rail.ts";
+
+// Components — W5a DATA / RBAC-coupled tier (decoupled via the Service seam —
+// injected source/send/onChange callbacks; no boot/api, no fetch, no /api literal).
+// perm-cell: the pure RBAC matrix cell (config-driven cycle order + onChange).
+export * from "./components/perm-cell/perm-cell.ts";
+// omni: global search via an injected Source<Result[]>; config-driven kinds.
+export * from "./components/omni/omni.ts";
+// message-thread: feed (injected poll source) + markdown composer (injected send).
+export * from "./components/message-thread/message-thread.ts";
+// chart-editor: chart-options form + live preview (injected columns/preview sources).
+export * from "./components/chart-editor/chart-editor.ts";
