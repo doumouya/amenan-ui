@@ -21,7 +21,7 @@
   color: var(--text);
 }
 
-.amu-score-pill.is-ok { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); }
+.amu-score-pill.is-ok { background: var(--signal-tint); color: var(--signal); }
 .amu-score-pill.is-warn { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
 .amu-score-pill.is-danger { background: color-mix(in srgb, var(--danger) 16%, transparent); color: var(--danger); }
 
@@ -38,8 +38,10 @@
   min-width: 14rem;
   padding: var(--sp-3) var(--sp-4);
   background: var(--surface);
+  border: 1.5px solid var(--rule);
   border-radius: var(--radius);
-  box-shadow: var(--ring), 0 8px 24px rgba(0, 0, 0, 0.3);
+  /* popover elevation token (the breakdown disclosure floats). */
+  box-shadow: var(--shadow-popover);
   z-index: 80;
   display: none;
 }

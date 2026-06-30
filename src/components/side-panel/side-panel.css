@@ -18,7 +18,8 @@
   align-items: center;
   gap: 0.125rem;
   padding: var(--sp-2) var(--sp-2);
-  border-bottom: 1px solid var(--border);
+  /* the panel's header line — structural identity (--rule), portfolio's hard line. */
+  border-bottom: 1px solid var(--rule);
 }
 /* a left panel's tabs grow from the left, collapse chevron trails right; a
    right panel mirrors (chevron leads, tabs fill the rest). */

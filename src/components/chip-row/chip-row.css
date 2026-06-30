@@ -5,6 +5,8 @@
   gap: 0.1875rem;
   padding: 0.1875rem;
   background: var(--surface-2);
-  border: 1px solid var(--border);
+  /* the segmented-control track is a structural identity line (portfolio's hard
+     rule); redpash's --rule resolves to its soft --border, so it's unchanged. */
+  border: 1px solid var(--rule);
   border-radius: var(--radius-pill);
 }

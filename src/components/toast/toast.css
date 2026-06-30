@@ -17,14 +17,17 @@
   gap: var(--sp-4);
   padding: var(--sp-3) var(--sp-4);
   background: var(--surface);
+  border: 1.5px solid var(--rule);
   border-radius: var(--radius);
-  box-shadow: var(--ring), 0 8px 24px rgba(0, 0, 0, 0.3);
+  /* floating feedback elevation token. */
+  box-shadow: var(--shadow-popover);
   font-size: var(--text-sm);
   animation: amu-toast-in var(--slow) var(--ease);
 }
 
 .amu-toast--danger {
-  box-shadow: 0 0 0 1px var(--danger), 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: var(--danger);
+  box-shadow: var(--shadow-popover);
 }
 
 .amu-toast-action {

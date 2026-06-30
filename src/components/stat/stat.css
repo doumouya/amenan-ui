@@ -9,8 +9,8 @@
 .amu-stat {
   padding: var(--sp-3) var(--sp-4);
   background: var(--surface);
+  border: 1.5px solid var(--rule);
   border-radius: var(--radius);
-  box-shadow: var(--ring);
 }
 
 .amu-stat-label {
@@ -27,7 +27,7 @@
   letter-spacing: -0.02em;
 }
 
-.amu-stat-value.is-ok { color: var(--ok); }
+.amu-stat-value.is-ok { color: var(--signal); }
 .amu-stat-value.is-warn { color: var(--warn); }
 .amu-stat-value.is-danger { color: var(--danger); }
 

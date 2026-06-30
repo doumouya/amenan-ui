@@ -6,8 +6,11 @@
   padding: var(--sp-4);
   background: var(--glass);
   backdrop-filter: blur(var(--glass-blur));
+  border: 1.5px solid var(--rule);
   border-radius: var(--radius-lg);
-  box-shadow: var(--ring), var(--shadow);
+  /* the structural identity surface: portfolio gets the Console offset block
+     (--rule-shadow = 4px 4px 0 ink); redpash keeps its soft shadow. */
+  box-shadow: var(--rule-shadow);
   color: var(--text);
   text-align: left;
   transition: background var(--fast) var(--ease);

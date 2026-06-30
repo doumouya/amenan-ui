@@ -28,7 +28,8 @@
   border-color: color-mix(in srgb, var(--info) 35%, var(--border));
 }
 
+/* rw = the granted / "on" affordance — the one-green --signal. */
 .amu-perm-cell[data-perm="rw"] {
-  color: var(--ok);
-  border-color: color-mix(in srgb, var(--ok) 35%, var(--border));
+  color: var(--signal);
+  border-color: color-mix(in srgb, var(--signal) 35%, var(--border));
 }

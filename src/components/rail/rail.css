@@ -256,7 +256,7 @@
   text-overflow: ellipsis;
 }
 .amu-rail-tab-dot { width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-pill); flex-shrink: 0; }
-.amu-rail-tab-dot.is-clean { background: var(--ok); }
+.amu-rail-tab-dot.is-clean { background: var(--signal); }
 .amu-rail-tab-dot.is-warn  { background: var(--warn); }
 .amu-rail-tab-dot.is-dirty { background: var(--accent); }
 
@@ -451,7 +451,8 @@
     flex-basis: var(--rail-w);
     transform: translateX(-100%);
     transition: transform var(--slow) var(--ease);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    /* off-canvas drawer elevation — popover token. */
+    box-shadow: var(--shadow-popover);
   }
   .amu-rail.compact {
     width: var(--rail-w);

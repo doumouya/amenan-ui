@@ -103,7 +103,8 @@
   color: var(--text-mute);
 }
 .amu-input:focus {
-  outline: none;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
   border-color: var(--accent);
 }
 
@@ -126,7 +127,8 @@
   color: var(--text-mute);
 }
 .amu-textarea:focus {
-  outline: none;
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
   border-color: var(--accent);
 }
 
@@ -143,7 +145,7 @@
   font-weight: 500;
   white-space: nowrap;
 }
-.amu-badge--ok { background: color-mix(in srgb, var(--ok) 14%, transparent); color: var(--ok); }
+.amu-badge--ok { background: var(--signal-tint); color: var(--signal); }
 .amu-badge--warn { background: color-mix(in srgb, var(--warn) 14%, transparent); color: var(--warn); }
 .amu-badge--danger { background: color-mix(in srgb, var(--danger) 14%, transparent); color: var(--danger); }
 .amu-badge--info { background: color-mix(in srgb, var(--info) 14%, transparent); color: var(--info); }

@@ -14,8 +14,10 @@
   max-height: 85vh;
   overflow: auto;
   background: var(--surface);
+  border: 1.5px solid var(--rule);
   border-radius: var(--radius-lg);
-  box-shadow: var(--ring), 0 16px 48px rgba(0, 0, 0, 0.35);
+  /* dialog elevation token: portfolio's flat dialog shadow, redpash's soft one. */
+  box-shadow: var(--shadow-dialog);
   padding: var(--sp-5);
 }
 
