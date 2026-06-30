@@ -59,6 +59,17 @@ function read(key: string): string | null {
   }
 }
 
+/** The mode currently APPLIED to html[data-mode] (what prePaint set), tolerant of
+    no-document (worker). Never throws. */
+function appliedMode(): Mode | null {
+  try {
+    const m = document.documentElement?.dataset?.mode;
+    return isMode(m) ? m : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Read the persisted theme NAME → default "redpash". A LEGACY single-axis value
     ("dark"/"light") persisted under amu-theme is NOT a theme — it is the old
     mode value, so the theme recovers to the default (AC-5). */
@@ -68,12 +79,20 @@ export function getTheme(): ThemeName {
   return DEFAULT_THEME;
 }
 
-/** Read the persisted MODE → default "dark". Back-compat (AC-5): if amu-mode is
-    absent but amu-theme holds a legacy "dark"/"light", interpret THAT as the
-    mode. */
+/** Resolve the MODE the SAME way prePaintSnippet applies it, so getMode() never
+    disagrees with the rendered html[data-mode] (CMT_7f57fd6a). The chain:
+      1. persisted amu-mode               — the explicit, persisted choice
+      2. the applied html[data-mode]      — what prePaint actually rendered
+      3. legacy amu-theme="dark"/"light"  — AC-5 back-compat (read as the mode)
+      4. "dark" (DEFAULT_MODE)            — the final fallback
+    With a hardcoded "dark" at step 2, the showcase label lied and the FIRST
+    toggleMode() no-opped against the applied render; reading the APPLIED
+    data-mode fixes both. Guards localStorage/document absence (never throws). */
 export function getMode(): Mode {
   const m = read(MODE_KEY);
   if (isMode(m)) return m;
+  const applied = appliedMode();
+  if (applied) return applied;
   const legacy = read(THEME_KEY);
   if (isMode(legacy)) return legacy;
   return DEFAULT_MODE;
@@ -129,6 +148,10 @@ export function onThemeChange(fn: (theme: ThemeName, mode: Mode) => void): () =>
 
 /** The inline <head> script SOURCE: reads amu-theme + amu-mode (WITH the legacy
     "dark"/"light" → mode migration of AC-5) and sets BOTH data-theme + data-mode
-    before first paint to prevent a flash of the default theme. Self-contained
-    (no imports); a host embeds this verbatim inside a <script> in <head>. */
+    before first paint to prevent a flash of the default theme. When NO mode is
+    persisted (and no legacy value), it falls back to DEFAULT_MODE ("dark") — the
+    SAME chain getMode() resolves — so the data-mode prePaint applies always
+    equals getMode() (CMT_7f57fd6a: prePaint and getMode resolve identically).
+    Self-contained (no imports), try/catch-wrapped (FOUC-safe); a host embeds this
+    verbatim inside a <script> in <head>. */
 export const prePaintSnippet: string = `(function(){try{var t=localStorage.getItem("${THEME_KEY}");var m=localStorage.getItem("${MODE_KEY}");var d=document.documentElement;var isMode=function(v){return v==="dark"||v==="light";};if(!isMode(m)){m=isMode(t)?t:"${DEFAULT_MODE}";}var theme=(t&&!isMode(t))?t:"${DEFAULT_THEME}";d.setAttribute("data-theme",theme);d.setAttribute("data-mode",m);}catch(e){}})();`;
