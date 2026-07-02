@@ -54,6 +54,12 @@ export function mountSqlEditor(host: Element, cfg: SqlEditorCfg): SqlEditorHandl
   const run = button({ label: "Run", variant: "accent", onClick: doRun });
   const save = button({ label: "Save as file", variant: "ghost", onClick: doSave });
 
+  // Materialize is an optional seam — without onMaterialize there is nowhere to
+  // save to, so the name + save controls don't render at all.
+  const actions = cfg.onMaterialize
+    ? el("div", { class: "amu-sqleditor-actions" }, name, save, run)
+    : el("div", { class: "amu-sqleditor-actions" }, run);
+
   root.append(
     el(
       "div",
@@ -63,12 +69,7 @@ export function mountSqlEditor(host: Element, cfg: SqlEditorCfg): SqlEditorHandl
       " — read-only.",
     ),
     area,
-    el(
-      "div",
-      { class: "amu-sqleditor-foot" },
-      status,
-      el("div", { class: "amu-sqleditor-actions" }, name, save, run),
-    ),
+    el("div", { class: "amu-sqleditor-foot" }, status, actions),
   );
 
   async function doRun(): Promise<void> {
@@ -77,7 +78,8 @@ export function mountSqlEditor(host: Element, cfg: SqlEditorCfg): SqlEditorHandl
     setStatus("Running…", "muted");
     run.disabled = true;
     try {
-      await cfg.onRun?.(q); // success: the consumer swapped the grid + closed this panel
+      await cfg.onRun?.(q); // success: the consumer showed the result (in-panel or by swapping the grid)
+      setStatus("");
     } catch (e) {
       setStatus(e instanceof Error ? e.message : "Query failed", "danger");
     } finally {
