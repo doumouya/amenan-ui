@@ -30,6 +30,34 @@
   box-shadow: var(--shadow-popover);
 }
 
+.amu-toast--ok {
+  border-color: var(--ok);
+}
+
+.amu-toast--warn {
+  border-color: var(--warn);
+}
+
+.amu-toast--info {
+  border-color: var(--info);
+}
+
+.amu-toast-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.amu-toast-title {
+  font-weight: 600;
+}
+
+.amu-toast-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
 .amu-toast-action {
   border: 0;
   background: none;

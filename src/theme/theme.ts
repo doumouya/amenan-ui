@@ -36,7 +36,7 @@ const DEFAULT_MODE: Mode = "dark";
 /** The registered theme names, in showcase-cycle order. Static list — NO DOM
     scan (the O(1) guarantee: switching never enumerates the document). Adding a
     theme appends its name here (see the THEME.md add-a-theme recipe). */
-const THEMES: readonly ThemeName[] = ["redpash", "portfolio", "numu"];
+const THEMES: readonly ThemeName[] = ["redpash", "portfolio", "numu", "numu-blue"];
 
 /** The registered theme names, in showcase-cycle order. */
 export function listThemes(): ThemeName[] {

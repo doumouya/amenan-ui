@@ -79,7 +79,7 @@ const NEW_CONSOLE = [
 const CONTRACT_TOKENS: readonly string[] = [...TODAY_PALETTE, ...NEW_CONSOLE];
 
 // The shipped themes the contract test verifies (excludes _template.css).
-const SHIPPED_THEMES = ["redpash", "portfolio", "numu"] as const;
+const SHIPPED_THEMES = ["redpash", "portfolio", "numu", "numu-blue"] as const;
 
 /** Read a theme file, or fail the test with a clear missing-file message
     (this is the RED signal until the coder creates the platform split). */

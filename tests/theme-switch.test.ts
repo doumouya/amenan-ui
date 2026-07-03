@@ -80,8 +80,8 @@ test("AC-10: listThemes() returns the registered theme names (static list)", () 
   assert.ok(Array.isArray(themes), "listThemes() returns an array");
   assert.deepEqual(
     themes,
-    ["redpash", "portfolio", "numu"],
-    "listThemes() is the showcase-cycle order redpash → portfolio → numu",
+    ["redpash", "portfolio", "numu", "numu-blue"],
+    "listThemes() is the showcase-cycle order redpash → portfolio → numu → numu-blue",
   );
 });
 

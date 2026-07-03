@@ -84,10 +84,14 @@ identity (ink/paper, one green signal, mono-first, hard rule + offset block).
 | `--focus-ring` | `var(--accent)` (red) | green (= `--signal`) |
 | `--chart-1..8` / `--status-*` | RedPash-tinted | web-kit `charts.css` / workflow states (`--chart-1` = signal) |
 
-`numu` is a documented WIP slot: it fills every contract token for both modes
-with redpash-derived placeholders, each carrying a `/* TODO(numu): … */` marker,
-so the slot resolves (no unfilled `var(--…)`) and the showcase can switch to it.
-Its true brand tokens land in a later milestone.
+`numu` carries its real brand tokens (formalized from the numu Design System,
+value-preserved): a monochrome **ink** accent — near-black in light, near-white
+in dark — over cool-neutral surfaces, flat (`--shadow: none`), with elevation
+only on the popover/dialog tiers. `numu-blue` is its one-click alternate — the
+identical contract with a single blue accent — so `setTheme("numu-blue")` is
+the whole switch. Both declare one EXTRA token beyond the frozen contract,
+`--selection-bg` (consumed by numu app CSS via `::selection`); extras are legal —
+the contract is a floor, not a ceiling.
 
 ## The two-axis selector + back-compat
 

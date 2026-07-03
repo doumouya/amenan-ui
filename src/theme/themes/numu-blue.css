@@ -1,19 +1,13 @@
-/* themes/numu.css — the numu brand theme (INK). Formalized from the numu Design
-   System (Claude Design project "numu Design System" · tokens/themes/numu.css,
-   value-preserved): a monochrome INK accent — near-black in light, near-white
-   in dark — over cool-neutral surfaces. Status hues and the chart palette stay
-   colorful so data reads; only the accent (primary actions, active state,
-   focus, links) is ink. Flat: no shadow on base surfaces, elevation only on the
-   floating tiers (popover/dialog).
+/* themes/numu-blue.css — the numu alternate: a single BLUE accent instead of
+   ink, over the same cool-neutral surfaces (numu Design System ·
+   tokens/themes/numu-blue.css, value-preserved). Fills the identical contract,
+   so setTheme("numu-blue") — one attribute write — is the whole switch.
 
-   Strictly attribute-keyed (html[data-theme="numu"] × [data-mode]) — the
-   platform's prePaintSnippet applies the axes before first paint, so no :root
-   or prefers-color-scheme fallback lives here. `--selection-bg` is a numu
-   EXTRA beyond the frozen 40-token contract (consumed by numu app CSS via
-   ::selection); contract tokens all filled below for both modes. */
+   Strictly attribute-keyed (html[data-theme="numu-blue"] × [data-mode]).
+   `--selection-bg` is a numu EXTRA beyond the frozen contract (see numu.css). */
 
-/* ── dark (ink → paper) ───────────────────────────────────────────────────── */
-html[data-theme="numu"][data-mode="dark"] {
+/* ── dark (blue-400 on dark) ──────────────────────────────────────────────── */
+html[data-theme="numu-blue"][data-mode="dark"] {
   --bg: #0b1120;
   --surface: #0f172a;
   --surface-2: #1e293b;
@@ -21,8 +15,8 @@ html[data-theme="numu"][data-mode="dark"] {
   --text: #e5e7eb;
   --text-dim: #94a3b8;
   --text-mute: #64748b;
-  --accent: #f3f4f6; /* ink → paper */
-  --accent-soft: color-mix(in srgb, #f3f4f6 12%, transparent);
+  --accent: #60a5fa;
+  --accent-soft: color-mix(in srgb, #60a5fa 16%, transparent);
   --on-accent: #0b1120;
   --ok: #22c55e;
   --warn: #f59e0b;
@@ -37,12 +31,12 @@ html[data-theme="numu"][data-mode="dark"] {
   color-scheme: dark;
 
   --signal: var(--accent);
-  --signal-hover: #ffffff;
+  --signal-hover: #3b82f6;
   --signal-tint: var(--accent-soft);
   --rule: var(--border);
   --rule-shadow: var(--shadow);
   --focus-ring: var(--accent);
-  --chart-1: #e5e7eb;
+  --chart-1: #60a5fa;
   --chart-2: #22d3ee;
   --chart-3: #a78bfa;
   --chart-4: #4ade80;
@@ -56,26 +50,26 @@ html[data-theme="numu"][data-mode="dark"] {
   --status-done: #22c55e;
   --shadow-popover: 0 4px 14px -2px rgba(0, 0, 0, 0.55), 0 2px 6px -2px rgba(0, 0, 0, 0.5);
   --shadow-dialog: 0 18px 48px -8px rgba(0, 0, 0, 0.7), 0 6px 14px -4px rgba(0, 0, 0, 0.5);
-  --selection-bg: color-mix(in srgb, #f3f4f6 22%, transparent);
+  --selection-bg: color-mix(in srgb, #60a5fa 30%, transparent);
 }
 
-/* ── light (ink) ──────────────────────────────────────────────────────────── */
-html[data-theme="numu"][data-mode="light"] {
+/* ── light (the one blue) ─────────────────────────────────────────────────── */
+html[data-theme="numu-blue"][data-mode="light"] {
   --bg: #f9fafb;
   --surface: #ffffff;
   --surface-2: #f3f4f6;
   --border: #e5e7eb;
-  --text: #111827;
-  --text-dim: #4b5563;
+  --text: #1f2937;
+  --text-dim: #6b7280;
   --text-mute: #9ca3af;
-  --accent: #111827; /* ink */
-  --accent-soft: color-mix(in srgb, #111827 8%, transparent);
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
   --on-accent: #ffffff;
   --ok: #16a34a;
   --warn: #d97706;
   --info: #2563eb;
   --danger: #dc2626;
-  --hover: rgba(17, 24, 39, 0.05);
+  --hover: rgba(16, 24, 40, 0.04);
   --glass: rgba(255, 255, 255, 0.65);
   --glass-blur: 0px;
   --shadow: none;
@@ -84,24 +78,24 @@ html[data-theme="numu"][data-mode="light"] {
   color-scheme: light;
 
   --signal: var(--accent);
-  --signal-hover: #000000;
+  --signal-hover: #1d4ed8;
   --signal-tint: var(--accent-soft);
   --rule: var(--border);
   --rule-shadow: var(--shadow);
   --focus-ring: var(--accent);
-  --chart-1: #111827;
+  --chart-1: #2563eb;
   --chart-2: #0891b2;
   --chart-3: #7c3aed;
   --chart-4: #16a34a;
   --chart-5: #d97706;
   --chart-6: #dc2626;
   --chart-7: #db2777;
-  --chart-8: #64748b;
+  --chart-8: #475569;
   --status-backlog: #9ca3af;
   --status-progress: #2563eb;
   --status-review: #d97706;
   --status-done: #16a34a;
   --shadow-popover: 0 4px 12px -2px rgba(15, 23, 42, 0.12), 0 2px 4px -2px rgba(15, 23, 42, 0.08);
   --shadow-dialog: 0 16px 40px -8px rgba(15, 23, 42, 0.22), 0 4px 10px -4px rgba(15, 23, 42, 0.10);
-  --selection-bg: #e5e7eb;
+  --selection-bg: #dbeafe;
 }

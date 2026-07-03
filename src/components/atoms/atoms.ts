@@ -2,7 +2,7 @@
    components call these instead of writing markup by hand. Each returns a raw
    element; a composed component imports the leaf rather than re-implementing it.
    Sole owner of the .amu-btn / .amu-chip / .amu-input / .amu-textarea /
-   .amu-badge / .amu-spinner / .amu-kbd namespaces. */
+   .amu-badge / .amu-spinner / .amu-kbd / .amu-icon namespaces. */
 
 import { el } from "../../kernel/dom.ts";
 
@@ -135,4 +135,31 @@ export function spinner(): HTMLSpanElement {
 /** A keyboard hint. */
 export function kbd(label: string): HTMLElement {
   return el("kbd", { class: "amu-kbd" }, label);
+}
+
+export interface IconCfg {
+  /** Font-size (any CSS length); defaults to the surrounding text size. */
+  size?: string;
+  /** Color (a token reference like "var(--accent)"); defaults to currentColor. */
+  color?: string;
+  /** Accessible name — give one ONLY when the icon carries meaning on its own;
+      decorative icons (paired with text) stay aria-hidden. */
+  label?: string;
+}
+
+/** A Bootstrap Icons glyph: `icon("funnel")` → `<i class="bi bi-funnel">`.
+    Takes the BARE icon name (no "bi-" prefix — unlike ButtonCfg.icon, which
+    predates this atom and keeps its prefixed form). The host page provides the
+    bootstrap-icons stylesheet; glyphs inherit currentColor so they sit against
+    hairlines and take the text/accent color for free. */
+export function icon(name: string, cfg: IconCfg = {}): HTMLElement {
+  const style =
+    (cfg.size ? `font-size:${cfg.size};` : "") + (cfg.color ? `color:${cfg.color};` : "");
+  return el("i", {
+    class: `amu-icon bi bi-${name}`,
+    style: style || null,
+    role: cfg.label ? "img" : null,
+    "aria-label": cfg.label ?? null,
+    "aria-hidden": cfg.label ? null : "true",
+  });
 }
