@@ -12,6 +12,29 @@
    EXTRA beyond the frozen 40-token contract (consumed by numu app CSS via
    ::selection); contract tokens all filled below for both modes. */
 
+/* ── structural retune (shared by numu + numu-blue) ───────────────────────────
+   numu is denser and tighter-cornered than the base contract; mode-independent,
+   so it lives once here (numu-blue.css inherits it — load numu.css alongside).
+   The ctl-h-sm/-lg, tap-min, text-2xs/3xl, focus-* tokens are numu Design
+   System surface consumed by numu app CSS, not by the component library. */
+html[data-theme="numu"],
+html[data-theme="numu-blue"] {
+  --sp-5: 1.25rem;
+  --radius-sm: 0.3rem;
+  --radius: 0.4rem;
+  --radius-lg: 0.6rem;
+  --ctl-h: 2.125rem;
+  --ctl-h-sm: 1.75rem;
+  --ctl-h-lg: 2.5rem;
+  --pad-x: 0.7rem;
+  --tap-min: 2.25rem;
+  --text-2xs: 0.7rem;
+  --text-3xl: 1.75rem;
+  --ring: 0 0 0 1px var(--border);
+  --focus-width: 2px;
+  --focus-offset: -1px;
+}
+
 /* ── dark (ink → paper) ───────────────────────────────────────────────────── */
 html[data-theme="numu"][data-mode="dark"] {
   --bg: #0b1120;

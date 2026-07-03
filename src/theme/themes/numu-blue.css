@@ -4,7 +4,9 @@
    so setTheme("numu-blue") — one attribute write — is the whole switch.
 
    Strictly attribute-keyed (html[data-theme="numu-blue"] × [data-mode]).
-   `--selection-bg` is a numu EXTRA beyond the frozen contract (see numu.css). */
+   `--selection-bg` is a numu EXTRA beyond the frozen contract (see numu.css).
+   The structural retune (density, radii, ctl heights) is shared from numu.css —
+   load numu.css alongside this file. */
 
 /* ── dark (blue-400 on dark) ──────────────────────────────────────────────── */
 html[data-theme="numu-blue"][data-mode="dark"] {
