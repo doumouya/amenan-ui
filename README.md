@@ -33,7 +33,9 @@ attribute write that re-skins the whole tree through the CSS cascade.
 - **palette** (every contract token) is filled per theme × mode in
   `src/theme/themes/<name>.css` (`redpash` byte-preserves the original look;
   `portfolio` is the Console identity — ink/paper, one green signal, mono-first,
-  hard rule + offset block; `numu` is a documented WIP slot).
+  hard rule + offset block; `numu` is the numu brand — real ink-accent tokens
+  formalized from the numu Design System — with `numu-blue` as its one-click
+  alternate).
 
 Link the flattened stylesheet:
 
@@ -119,7 +121,7 @@ import { setTheme, setMode, toggleMode, listThemes, getTheme, getMode, onThemeCh
 setTheme("portfolio");          // write html[data-theme], persist amu-theme
 setMode("light");               // write html[data-mode], persist amu-mode
 toggleMode();                   // flip dark↔light
-listThemes();                   // ["redpash", "portfolio", "numu"] — cycle these
+listThemes();                   // ["redpash", "portfolio", "numu", "numu-blue"] — cycle these
 onThemeChange((theme, mode) => console.log("look is now", theme, mode));
 ```
 
