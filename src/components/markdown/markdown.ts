@@ -6,16 +6,17 @@
    mailto only) and open in a new tab (rel=noopener). Everything not recognised is
    literal text.
 
-   Supported: paragraphs (blank-line separated, single newline → <br>), **bold** /
-   __bold__, *italic* / _italic_, `code`, ```fenced``` code, > blockquote, - / *
-   and 1. lists, [label](url) links. Sole owner of .amu-md (markdown.css).
+   Supported: paragraphs (blank-line separated, single newline → <br>), # … ######
+   headings, **bold** / __bold__, *italic* / _italic_, `code`, ```fenced``` code,
+   > blockquote, - / * and 1. lists, [label](url) links. Sole owner of .amu-md
+   (markdown.css).
 
    renderMarkdown(text) -> HTMLElement (a .amu-md container). */
 
 import { el } from "../../kernel/dom.ts";
 
 const SAFE_SCHEME = /^(https?:|mailto:)/i;
-const BLOCK_LEAD = /^(```|>\s?|\s*[-*]\s+|\s*\d+\.\s+)/;
+const BLOCK_LEAD = /^(```|>\s?|\s*[-*]\s+|\s*\d+\.\s+|#{1,6}\s)/;
 
 // ── inline spans: emit text nodes + safe inline elements, leftmost-match first.
 //    Precedence at a tie: code · link · bold · italic. Nested by re-parsing the
@@ -75,6 +76,12 @@ export function renderMarkdown(text?: string): HTMLElement {
       const buf = take((l) => !/^```/.test(l));
       i++; // closing fence
       root.append(el("pre", {}, el("code", {}, buf.join("\n"))));
+    } else if (/^#{1,6}\s/.test(line)) {
+      // heading — one line, level = the # count; text flows through the same safe inline()
+      const m = /^(#{1,6})\s+(.*)$/.exec(line);
+      const H = ["h1", "h2", "h3", "h4", "h5", "h6"] as const;
+      root.append(el(H[(m?.[1]?.length ?? 1) - 1] ?? "h1", {}, ...inline(m?.[2] ?? "")));
+      i++;
     } else if (/^>\s?/.test(line)) {
       const buf = take((l) => /^>\s?/.test(l)).map((l) => l.replace(/^>\s?/, ""));
       root.append(el("blockquote", {}, ...inline(buf.join("\n"))));

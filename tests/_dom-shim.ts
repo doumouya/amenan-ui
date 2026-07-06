@@ -74,6 +74,13 @@ export class FakeElement {
     return name === "class" ? this.className !== "" : name in this.attributes;
   }
 
+  // the kernel's el() duck-tests `nodeType`; renderMarkdown appends variadically.
+  get nodeType(): number {
+    return this.tagName === "#TEXT" ? 3 : 1;
+  }
+  append(...nodes: FakeElement[]) {
+    for (const n of nodes) this.appendChild(n);
+  }
   appendChild(child: FakeElement) {
     child.parentNode = this;
     this.children.push(child);
