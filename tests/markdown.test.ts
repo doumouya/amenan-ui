@@ -61,3 +61,45 @@ test("safety canary: a safe link still renders as <a> with the guard attrs", () 
   assert.equal(a.getAttribute("rel"), "noopener noreferrer");
   assert.equal(a.getAttribute("target"), "_blank");
 });
+
+// ── GFM pipe tables (the docs-in-site addition) ────────────────────────────
+
+test("a pipe table renders thead th from row 1 and tbody td rows", () => {
+  const root = md("| a | b |\n|---|---|\n| 1 | `x` |\n| 2 | y |");
+  const table = root.children[0]!;
+  assert.equal(table.tagName, "TABLE");
+  const [thead, tbody] = table.children;
+  assert.equal(thead!.tagName, "THEAD");
+  assert.equal(tbody!.tagName, "TBODY");
+  assert.deepEqual(thead!.children[0]!.children.map((c) => c.tagName), ["TH", "TH"]);
+  assert.equal(tbody!.children.length, 2);
+  assert.ok(tbody!.children[0]!.children[1]!.children.some((c) => c.tagName === "CODE"), "cells flow through inline()");
+});
+
+test("alignment colons in the divider are accepted", () => {
+  const root = md("| a | b |\n|:--|--:|\n| 1 | 2 |");
+  assert.equal(root.children[0]!.tagName, "TABLE");
+});
+
+test("an escaped pipe stays a literal pipe inside its cell", () => {
+  const root = md("| a |\n|---|\n| x \\| y |");
+  const td = root.children[0]!.children[1]!.children[0]!.children[0]!;
+  assert.equal(textOf(td), "x | y");
+});
+
+test("a pipe-framed run WITHOUT a divider is a paragraph, not a table", () => {
+  const root = md("| just | prose |\n| more | prose |");
+  assert.deepEqual(tags(root), ["P"]);
+});
+
+test("a table terminates a paragraph run", () => {
+  const root = md("prose line\n| a | b |\n|---|---|\n| 1 | 2 |");
+  assert.deepEqual(tags(root), ["P", "TABLE"]);
+});
+
+test("safety canary: an unsafe link scheme stays literal text inside a cell", () => {
+  const root = md("| a |\n|---|\n| [x](javascript:alert(1)) |");
+  const td = root.children[0]!.children[1]!.children[0]!.children[0]!;
+  assert.ok(!td.children.some((c) => c.tagName === "A"), "no <a> for an unsafe scheme");
+  assert.ok(textOf(td).includes("[x](javascript:alert(1))"));
+});

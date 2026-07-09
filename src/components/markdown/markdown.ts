@@ -8,7 +8,9 @@
 
    Supported: paragraphs (blank-line separated, single newline → <br>), # … ######
    headings, **bold** / __bold__, *italic* / _italic_, `code`, ```fenced``` code,
-   > blockquote, - / * and 1. lists, [label](url) links. Sole owner of .amu-md
+   > blockquote, - / * and 1. lists, [label](url) links, GFM pipe tables (header
+   row + |---| divider; cells through the same safe inline(); a pipe-framed run
+   WITHOUT a divider renders as a plain paragraph). Sole owner of .amu-md
    (markdown.css).
 
    renderMarkdown(text) -> HTMLElement (a .amu-md container). */
@@ -17,6 +19,9 @@ import { el } from "../../kernel/dom.ts";
 
 const SAFE_SCHEME = /^(https?:|mailto:)/i;
 const BLOCK_LEAD = /^(```|>\s?|\s*[-*]\s+|\s*\d+\.\s+|#{1,6}\s)/;
+// a table row is pipe-framed; the divider row (line 2) is pipes/dashes/colons only
+const TABLE_ROW = /^\s*\|.*\|\s*$/;
+const TABLE_DIV = /^\s*\|[\s:|-]*-[\s:|-]*\|\s*$/;
 
 // ── inline spans: emit text nodes + safe inline elements, leftmost-match first.
 //    Precedence at a tie: code · link · bold · italic. Nested by re-parsing the
@@ -89,10 +94,31 @@ export function renderMarkdown(text?: string): HTMLElement {
       root.append(el("ul", {}, ...listItems(take((l) => /^\s*[-*]\s+/.test(l)), /^\s*[-*]\s+/)));
     } else if (/^\s*\d+\.\s+/.test(line)) {
       root.append(el("ol", {}, ...listItems(take((l) => /^\s*\d+\.\s+/.test(l)), /^\s*\d+\.\s+/)));
+    } else if (TABLE_ROW.test(line)) {
+      // GFM pipe table: header row, |---| divider, body rows. \| escapes a
+      // literal pipe inside a cell. Alignment colons are accepted and ignored.
+      const rows = take((l) => TABLE_ROW.test(l));
+      if (rows.length >= 2 && TABLE_DIV.test(rows[1] ?? "")) {
+        const cells = (r: string): string[] =>
+          r.trim().replace(/\\\|/g, "\x00").replace(/^\|/, "").replace(/\|$/, "")
+            .split("|").map((c) => c.trim().replace(/\x00/g, "|"));
+        const tr = (r: string, tag: "th" | "td") => el("tr", {}, ...cells(r).map((c) => el(tag, {}, ...inline(c))));
+        root.append(el("table", {},
+          el("thead", {}, tr(rows[0] ?? "", "th")),
+          el("tbody", {}, ...rows.slice(2).map((r) => tr(r, "td")))));
+      } else {
+        // pipe-framed but no divider → not a table; keep the lines as a paragraph
+        const p = el("p", {});
+        rows.forEach((ln, k) => {
+          if (k) p.append(el("br"));
+          p.append(...inline(ln));
+        });
+        root.append(p);
+      }
     } else if (line.trim() === "") {
       i++;
     } else {
-      const buf = take((l) => l.trim() !== "" && !BLOCK_LEAD.test(l));
+      const buf = take((l) => l.trim() !== "" && !BLOCK_LEAD.test(l) && !TABLE_ROW.test(l));
       const p = el("p", {});
       buf.forEach((ln, k) => {
         if (k) p.append(el("br"));

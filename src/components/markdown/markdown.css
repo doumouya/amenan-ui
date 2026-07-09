@@ -1,7 +1,7 @@
 /* markdown — display styles for rendered Markdown (.amu-md). Sole owner of
    .amu-md (ui-fork-audit R4); the descendant rules style the safe element subset
    the renderer emits (p · h1–h6 · strong · em · code · pre · a · ul/ol/li ·
-   blockquote). Relative units; 1px hairlines only. */
+   blockquote · table). Relative units; 1px hairlines only. */
 
 .amu-md {
   font-size: var(--text-sm);
@@ -53,3 +53,21 @@
 
 .amu-md ul, .amu-md ol { margin: 0 0 var(--sp-2); padding-left: 1.4rem; }
 .amu-md li { margin: 0.1rem 0; }
+
+/* GFM pipe tables — block display so a wide table scrolls inside the column
+   (same overflow idiom as pre) instead of bursting it */
+.amu-md table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0 0 var(--sp-2);
+  font-size: 0.95em;
+}
+.amu-md th, .amu-md td {
+  border: 1px solid var(--border);
+  padding: 0.3em 0.6em;
+  text-align: left;
+  vertical-align: top;
+}
+.amu-md th { background: var(--surface); font-weight: 600; }
